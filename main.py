@@ -17,7 +17,7 @@ def main():
     current_date = datetime.now()
     date_string = current_date.strftime("%m/%d/%Y")
 
-    # Execute the main loop
+    # Execute the main loop of trials
     print("Press the Button to start!")
     with open(sys.argv[1], 'w', newline="") as file:
         writer = csv.writer(file)
@@ -58,5 +58,6 @@ def trial_loop(writer, date_string):
         start_time = current_time
 
 
+# Run the program
 if __name__ == "__main__":
     main()
