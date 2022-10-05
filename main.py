@@ -1,8 +1,9 @@
 """Main file."""
 
-import sys
 import csv
+import sys
 from datetime import datetime
+
 from utils import get_cluster_name
 
 
@@ -19,7 +20,7 @@ def main():
 
     # Execute the main loop of trials
     print("Press the Button to start!")
-    with open(sys.argv[1], 'w', newline="") as file:
+    with open(sys.argv[1], "w", newline="") as file:
         writer = csv.writer(file)
 
         # Loop through every cluster
@@ -47,12 +48,21 @@ def trial_loop(writer, date_string):
         # Insert the Initiation line
         if start_time:
             interval = (current_time - start_time).seconds
-            writer.writerow([f"Piece {piece_num}", date_string, current_time.strftime("%H:%M:%S"), interval])
+            writer.writerow(
+                [
+                    f"Piece {piece_num}",
+                    date_string,
+                    current_time.strftime("%H:%M:%S"),
+                    interval,
+                ]
+            )
             piece_num += 1
 
         # Insert a Piece line
         else:
-            writer.writerow(["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""])
+            writer.writerow(
+                ["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""]
+            )
 
         # Reset the start time for interval comparison
         start_time = current_time
