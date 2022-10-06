@@ -121,7 +121,7 @@ def trial_loop(sorting_cluster: list, date_string: str):
         # Get the current time
         current_time = datetime.now()
 
-        # Insert the Initiation line
+        # Insert a Piece line
         if start_time:
             interval = current_time - start_time
             sorting_cluster.append(
@@ -134,7 +134,7 @@ def trial_loop(sorting_cluster: list, date_string: str):
             )
             piece_num += 1
 
-        # Insert a Piece line
+        # Insert the Initiation line
         else:
             sorting_cluster.append(
                 ["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""]
