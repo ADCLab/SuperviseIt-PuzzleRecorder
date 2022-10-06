@@ -47,13 +47,13 @@ def trial_loop(writer, date_string):
 
         # Insert the Initiation line
         if start_time:
-            interval = (current_time - start_time).seconds
+            interval = current_time - start_time
             writer.writerow(
                 [
                     f"Piece {piece_num}",
                     date_string,
                     current_time.strftime("%H:%M:%S"),
-                    interval,
+                    f"{interval.seconds + interval.microseconds / (10**6):.3f}"
                 ]
             )
             piece_num += 1
