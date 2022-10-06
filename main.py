@@ -42,14 +42,16 @@ def main():
     sorting_clusters: list[list[list]] = []
     placing_clusters: list[list[list]] = []
 
-    print("Press the Button to start Sorting Clusters")
     for i in range(num_sorting_clusters):
+        print(f"Press the Button to start Sorting Cluster {i+1}")
+
         sorting_clusters.append(list())
         trial_loop(sorting_clusters[i], date_string)
         print(sorting_clusters[i])
 
-    print("Press the Button to start Placing Clusters")
     for i in range(num_placing_clusters):
+        print(f"Press the Button to start Placing Cluster {i+1}")
+
         placing_clusters.append(list())
         trial_loop(placing_clusters[i], date_string)
         print(placing_clusters[i])
