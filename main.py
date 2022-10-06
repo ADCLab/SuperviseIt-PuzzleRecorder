@@ -47,14 +47,12 @@ def main():
 
         sorting_clusters.append(list())
         trial_loop(sorting_clusters[i], date_string)
-        print(sorting_clusters[i])
 
     for i in range(num_placing_clusters):
         print(f"Press the Button to start Placing Cluster {i+1}")
 
         placing_clusters.append(list())
         trial_loop(placing_clusters[i], date_string)
-        print(placing_clusters[i])
 
     # Create header rows
     row1 = []
