@@ -4,8 +4,6 @@ import csv
 import sys
 from datetime import datetime
 
-from utils import get_cluster_name
-
 
 def main():
     """Run the entry code."""
@@ -38,19 +36,75 @@ def main():
     current_date = datetime.now()
     date_string = current_date.strftime("%m/%d/%Y")
 
+    # Declare clusters
+    sorting_clusters: list[list[list]] = []
+    placing_clusters: list[list[list]] = []
+
+    print("Press the Button to start Sorting Clusters")
+    for i in range(num_sorting_clusters):
+        sorting_clusters.append(list())
+        trial_loop(sorting_clusters[i], date_string)
+        print(sorting_clusters[i])
+
+    print("Press the Button to start Placing Clusters")
+    for i in range(num_placing_clusters):
+        placing_clusters.append(list())
+        trial_loop(placing_clusters[i], date_string)
+        print(placing_clusters[i])
+
+    # Create header rows
+    row1 = []
+    row2 = []
+    for i in range(num_sorting_clusters):
+        row1 += [f"Sorting Cluster {i+1}", "", "", ""]
+        row2 += ["#", "Date", "Time", "Interval"]
+
+    for i in range(num_placing_clusters):
+        row1 += [f"Placing Cluster {i+1}", "", "", ""]
+        row2 += ["#", "Date", "Time", "Interval"]
+
+    # Create data rows
+    data_rows = []
+    counter = 0
+    while True:
+        data_rows.append([])
+        more_rows_needed = False
+
+        # Get the data from the next row in all sorting clusters
+        for cluster in sorting_clusters:
+
+            if counter < len(cluster):
+                data_rows[counter] += cluster[counter]
+                more_rows_needed = True
+            else:
+                data_rows[counter] += ["", "", "", ""]
+
+        # Get the data from the next row in all placing clusters
+        for cluster in placing_clusters:
+
+            if counter < len(cluster):
+                data_rows[counter] += cluster[counter]
+                more_rows_needed = True
+            else:
+                data_rows[counter] += ["", "", "", ""]
+
+        counter += 1
+
+        # Check if no new data was input
+        if more_rows_needed is False:
+            del data_rows[-1]
+            break
+
     # Execute the main loop of trials
-    print("Press the Button to start!")
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
 
-        # Loop through every cluster
-        for cluster_num in range(1, 3):
-            writer.writerow([get_cluster_name(cluster_num)])
-            writer.writerow(["#", "Date", "Time", "Interval"])
-            trial_loop(writer, date_string)
+        writer.writerow(row1)
+        writer.writerow(row2)
+        writer.writerows(data_rows)
 
 
-def trial_loop(writer, date_string):
+def trial_loop(sorting_cluster: list, date_string: str):
     """Run the loop to capture trials."""
     # Main trial loop
     start_time = None
@@ -68,7 +122,7 @@ def trial_loop(writer, date_string):
         # Insert the Initiation line
         if start_time:
             interval = current_time - start_time
-            writer.writerow(
+            sorting_cluster.append(
                 [
                     f"Piece {piece_num}",
                     date_string,
@@ -80,7 +134,7 @@ def trial_loop(writer, date_string):
 
         # Insert a Piece line
         else:
-            writer.writerow(
+            sorting_cluster.append(
                 ["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""]
             )
 
