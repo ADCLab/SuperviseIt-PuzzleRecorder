@@ -10,7 +10,9 @@ def main():
     # Return if the arguments are not provided
     if len(sys.argv) < 4:
         print("Not enough information provided.\nPlease use the format:\n")
-        print(f"python {sys.argv[0]} [filename] [# of sorting clusters] [# of placing clusters]")
+        print(
+            f"python {sys.argv[0]} [filename] [# of sorting clusters] [# of placing clusters]"
+        )
         return
 
     # Get the arguments
@@ -127,7 +129,7 @@ def trial_loop(sorting_cluster: list, date_string: str):
                     f"Piece {piece_num}",
                     date_string,
                     current_time.strftime("%H:%M:%S"),
-                    f"{interval.seconds + interval.microseconds / (10**6):.3f}"
+                    f"{interval.seconds + interval.microseconds / (10**6):.3f}",
                 ]
             )
             piece_num += 1
