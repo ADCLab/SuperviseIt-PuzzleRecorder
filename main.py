@@ -9,9 +9,29 @@ from utils import get_cluster_name
 
 def main():
     """Run the entry code."""
-    # Return if the filename is not provided
-    if len(sys.argv) < 2:
-        print("Please enter a file name for this participant.")
+    # Return if the arguments are not provided
+    if len(sys.argv) < 4:
+        print("Not enough information provided.\nPlease use the format:\n")
+        print(f"python {sys.argv[0]} [filename] [# of sorting clusters] [# of placing clusters]")
+        return
+
+    # Get the arguments
+    filename = sys.argv[1]
+    if filename.endswith(".csv") is False:
+        print("Please enter a csv file.")
+        return
+
+    try:
+        # Convert the cluster numbers to int types
+        num_sorting_clusters = int(sys.argv[2])
+        num_placing_clusters = int(sys.argv[3])
+
+        # Make sure that there is at least 1 of each type of cluster
+        if num_sorting_clusters < 1 or num_placing_clusters < 1:
+            raise ValueError
+
+    except ValueError:
+        print("Please enter a whole number for the # of clusters.")
         return
 
     # Get the current date for entry
@@ -20,7 +40,7 @@ def main():
 
     # Execute the main loop of trials
     print("Press the Button to start!")
-    with open(sys.argv[1], "w", newline="") as file:
+    with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
 
         # Loop through every cluster
