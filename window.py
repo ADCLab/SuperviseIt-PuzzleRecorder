@@ -101,16 +101,26 @@ class Window:
         """Create the frame for cluster input."""
         self.button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
+        # Cluster Label
+        self.current_cluster_label = tkinter.Label(
+            self.button_frame,
+            text="",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.current_cluster_label.pack(pady=(0, 10))
+
         # Start Button
         self.start_button = tkinter.Button(
             self.button_frame,
-            text="Start Cluster 1",
+            text="Start",
             font=("Arial Bold", 10),
             background="cyan",
             activebackground="cyan",
             foreground="black",
             width=20,
             height=10,
+            state="disabled",
         )
         self.start_button.bind("<Button-1>", self.start_trial)
         self.start_button.bind("<Return>", self.start_trial)
@@ -119,7 +129,7 @@ class Window:
         # Stop Button
         self.stop_button = tkinter.Button(
             self.button_frame,
-            text="Stop Cluster 1",
+            text="Stop",
             font=("Arial Bold", 10),
             background="cyan",
             foreground="black",
@@ -159,20 +169,15 @@ class Window:
         # Configure widgets as necessary
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
         self.placing_label.config(text=f"Placing Clusters: {num_placing_clusters}")
+        self.current_cluster_label.config(text="Sorting Cluster 1")
 
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
+        self.start_button.config(state="normal")
 
     def start_trial(self, event=None):
         """Start a trial."""
-        # Make sure that the clusters input has been given
-        if DataMedium.received_clusters is False:
-            tkinter.messagebox.showwarning(
-                "Wait!", "Please set the number of clusters."
-            )
-            return
-
         # Configure buttons
         self.start_button.config(state="disabled")
         self.stop_button.config(state="normal")
@@ -187,12 +192,11 @@ class Window:
 
             # Change the button names
             if DataMedium.is_on_sorting():
-                self.start_button.config(
-                    text=f"Start Cluster {DataMedium.num_sorted_clusters + 1}"
+                self.current_cluster_label.config(
+                    text=f"Sorting Cluster {DataMedium.num_sorted_clusters + 1}"
                 )
-                self.stop_button.config(
-                    text=f"Stop Cluster {DataMedium.num_sorted_clusters + 1}"
-                )
+            else:
+                self.current_cluster_label.config(text="Placing Cluster 1")
 
         elif DataMedium.is_on_placing():
 
@@ -201,11 +205,8 @@ class Window:
 
             # Change the button names
             if DataMedium.is_on_placing():
-                self.start_button.config(
-                    text=f"Start Cluster {DataMedium.num_placed_clusters + 1}"
-                )
-                self.stop_button.config(
-                    text=f"Stop Cluster {DataMedium.num_placed_clusters + 1}"
+                self.current_cluster_label.config(
+                    text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
                 )
 
         self.stop_button.config(state="disabled")
