@@ -15,6 +15,8 @@ class DataMedium:
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
+    is_in_trial: bool = False
+
     @classmethod
     def set_clusters(cls, num_sorting_clusters: int, num_placing_clusters: int):
         """Set the cluster numbers."""

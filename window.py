@@ -101,17 +101,8 @@ class Window:
         """Create the frame for cluster input."""
         self.button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
-        # Cluster Label
-        self.current_cluster_label = tkinter.Label(
-            self.button_frame,
-            text="",
-            font=("Arial Bold", 12),
-            background=BACKGROUND_COLOR,
-        )
-        self.current_cluster_label.pack(pady=(0, 10))
-
-        # Start Button
-        self.start_button = tkinter.Button(
+        # Trial Button
+        self.trial_button = tkinter.Button(
             self.button_frame,
             text="Start",
             font=("Arial Bold", 10),
@@ -122,24 +113,18 @@ class Window:
             height=10,
             state="disabled",
         )
-        self.start_button.bind("<Button-1>", self.start_trial)
-        self.start_button.bind("<Return>", self.start_trial)
-        self.start_button.pack(side=tkinter.LEFT, padx=(0, 20))
+        self.trial_button.bind("<Button-1>", self.trial)
+        self.trial_button.bind("<Return>", self.trial)
+        self.trial_button.pack()
 
-        # Stop Button
-        self.stop_button = tkinter.Button(
+        # Cluster Label
+        self.current_cluster_label = tkinter.Label(
             self.button_frame,
-            text="Stop",
-            font=("Arial Bold", 10),
-            background="cyan",
-            foreground="black",
-            width=20,
-            height=10,
-            state="disabled",
+            text="",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
         )
-        self.stop_button.bind("<Button-1>", self.stop_trial)
-        self.stop_button.bind("<Return>", self.stop_trial)
-        self.stop_button.pack(side=tkinter.RIGHT, padx=(20, 0))
+        self.current_cluster_label.pack(pady=(10, 0))
 
         self.button_frame.pack(pady=(40, 0))
 
@@ -174,21 +159,31 @@ class Window:
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
-        self.start_button.config(state="normal")
+        self.trial_button.config(state="normal")
 
-    def start_trial(self, event=None):
-        """Start a trial."""
-        # Configure buttons
-        self.start_button.config(state="disabled")
-        self.stop_button.config(state="normal")
+    def trial(self, event=None):
+        """Change the trial state."""
+        # Check if the trial is ongoing
+        if DataMedium.is_in_trial is False:
 
-    def stop_trial(self, event=None):
+            # Change the button
+            self.trial_button.config(text="Stop")
+            DataMedium.is_in_trial = True
+
+        else:
+
+            # Change the button
+            self.trial_button.config(text="Start")
+            DataMedium.is_in_trial = False
+
+            self.stop_trial()
+
+    def stop_trial(self):
         """Stop a trial."""
         # Determine if this is a sorting or placing trial
         if DataMedium.is_on_sorting():
 
             DataMedium.num_sorted_clusters += 1
-            self.start_button.config(state="normal")
 
             # Change the button names
             if DataMedium.is_on_sorting():
@@ -201,7 +196,6 @@ class Window:
         elif DataMedium.is_on_placing():
 
             DataMedium.num_placed_clusters += 1
-            self.start_button.config(state="normal")
 
             # Change the button names
             if DataMedium.is_on_placing():
@@ -209,12 +203,10 @@ class Window:
                     text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
                 )
 
-        self.stop_button.config(state="disabled")
-
     def mark_date(self, event=None):
         """Mark the date in a trial."""
         # Return if there is not a trial ongoing
-        if self.start_button["state"] == "normal":
+        if DataMedium.is_in_trial is False:
             return
 
         # Determine if this is a sorting or placing trial
