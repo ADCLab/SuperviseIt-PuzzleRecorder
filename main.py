@@ -3,16 +3,24 @@
 import csv
 import sys
 from datetime import datetime
+from threading import Thread
+
+from utils import DataMedium
+from window import Window
+
+
+def run_window():
+    """Run the window thread."""
+    window = Window()
+    window.start()
 
 
 def main():
     """Run the entry code."""
     # Return if the arguments are not provided
-    if len(sys.argv) < 4:
-        print("Not enough information provided.\nPlease use the format:\n")
-        print(
-            f"python {sys.argv[0]} [filename] [# of sorting clusters] [# of placing clusters]"
-        )
+    if len(sys.argv) < 2:
+        print("No file name provided.\nPlease use the format:\n")
+        print(f"python {sys.argv[0]} [filename]")
         return
 
     # Get the arguments
@@ -21,52 +29,99 @@ def main():
         print("Please enter a csv file.")
         return
 
-    try:
-        # Convert the cluster numbers to int types
-        num_sorting_clusters = int(sys.argv[2])
-        num_placing_clusters = int(sys.argv[3])
-
-        # Make sure that there is at least 1 of each type of cluster
-        if num_sorting_clusters < 1 or num_placing_clusters < 1:
-            raise ValueError
-
-    except ValueError:
-        print("Please enter a whole number for the # of clusters.")
-        return
+    # Set up the window thread
+    window_thread = Thread(target=run_window)
+    window_thread.daemon = True
+    window_thread.start()
 
     # Get the current date for entry
     current_date = datetime.now()
     date_string = current_date.strftime("%m/%d/%Y")
 
+    # Wait for the clusters numbers to be entered in the GUI
+    while (
+        DataMedium.received_clusters is False
+        or DataMedium.is_on_sorting() is True
+        or DataMedium.is_on_placing() is True
+    ):
+        pass
+
     # Declare clusters
     sorting_clusters: list[list[list]] = []
     placing_clusters: list[list[list]] = []
 
-    for i in range(num_sorting_clusters):
-        print(f"Press the Button to start Sorting Cluster {i+1}")
+    for times in DataMedium.sorting_clusters_times:
+        cluster = list()
+        set_cluster_data(cluster, times, date_string)
+        sorting_clusters.append(cluster)
 
-        sorting_clusters.append(list())
-        trial_loop(sorting_clusters[i], date_string)
+    for times in DataMedium.placing_clusters_times:
+        cluster = list()
+        set_cluster_data(cluster, times, date_string)
+        placing_clusters.append(cluster)
 
-    for i in range(num_placing_clusters):
-        print(f"Press the Button to start Placing Cluster {i+1}")
-
-        placing_clusters.append(list())
-        trial_loop(placing_clusters[i], date_string)
-
-    # Create header rows
+    # Create rows
     row1 = []
     row2 = []
-    for i in range(num_sorting_clusters):
+    data_rows = []
+    set_rows(row1, row2, data_rows, sorting_clusters, placing_clusters)
+
+    # Write to the file
+    with open(filename, "w", newline="") as file:
+        writer = csv.writer(file)
+
+        writer.writerow(row1)
+        writer.writerow(row2)
+        writer.writerows(data_rows)
+
+
+def set_cluster_data(cluster: list[list[str]], times: list[datetime], date_string: str):
+    """Set cluster data."""
+    start_time = None
+    piece_num = 1
+    for current_time in times:
+
+        # Insert a Piece line
+        if start_time:
+            interval = current_time - start_time
+            cluster.append(
+                [
+                    f"Piece {piece_num}",
+                    date_string,
+                    current_time.strftime("%H:%M:%S"),
+                    f"{interval.seconds + interval.microseconds / (10**6):.3f}",
+                ]
+            )
+            piece_num += 1
+
+        # Insert the Initiation line
+        else:
+            cluster.append(
+                ["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""]
+            )
+
+        # Reset the start time for interval comparison
+        start_time = current_time
+
+
+def set_rows(
+    row1: list[str],
+    row2: list[str],
+    data_rows: list[list[str]],
+    sorting_clusters: list[list[list[str]]],
+    placing_clusters: list[list[list[str]]],
+):
+    """Fill out the rows."""
+    # Fill out the header rows
+    for i in range(DataMedium.num_sorting_clusters):
         row1 += [f"Sorting Cluster {i+1}", "", "", ""]
         row2 += ["#", "Date", "Time", "Interval"]
 
-    for i in range(num_placing_clusters):
+    for i in range(DataMedium.num_placing_clusters):
         row1 += [f"Placing Cluster {i+1}", "", "", ""]
         row2 += ["#", "Date", "Time", "Interval"]
 
-    # Create data rows
-    data_rows = []
+    # Fill out the data rows
     counter = 0
     while True:
         data_rows.append([])
@@ -96,52 +151,6 @@ def main():
         if more_rows_needed is False:
             del data_rows[-1]
             break
-
-    # Execute the main loop of trials
-    with open(filename, "w", newline="") as file:
-        writer = csv.writer(file)
-
-        writer.writerow(row1)
-        writer.writerow(row2)
-        writer.writerows(data_rows)
-
-
-def trial_loop(sorting_cluster: list, date_string: str):
-    """Run the loop to capture trials."""
-    # Main trial loop
-    start_time = None
-    piece_num = 1
-    while True:
-
-        # Wait for a button press or exit command
-        # Return if the entry was not an empty button press
-        if input() != "":
-            return
-
-        # Get the current time
-        current_time = datetime.now()
-
-        # Insert a Piece line
-        if start_time:
-            interval = current_time - start_time
-            sorting_cluster.append(
-                [
-                    f"Piece {piece_num}",
-                    date_string,
-                    current_time.strftime("%H:%M:%S"),
-                    f"{interval.seconds + interval.microseconds / (10**6):.3f}",
-                ]
-            )
-            piece_num += 1
-
-        # Insert the Initiation line
-        else:
-            sorting_cluster.append(
-                ["Initiation", date_string, current_time.strftime("%H:%M:%S"), ""]
-            )
-
-        # Reset the start time for interval comparison
-        start_time = current_time
 
 
 # Run the program
