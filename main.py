@@ -1,7 +1,6 @@
 """Main file."""
 
 import csv
-import sys
 from datetime import datetime
 from threading import Thread
 
@@ -17,18 +16,6 @@ def run_window():
 
 def main():
     """Run the entry code."""
-    # Return if the arguments are not provided
-    if len(sys.argv) < 2:
-        print("No file name provided.\nPlease use the format:\n")
-        print(f"python {sys.argv[0]} [filename]")
-        return
-
-    # Get the arguments
-    filename = sys.argv[1]
-    if filename.endswith(".csv") is False:
-        print("Please enter a csv file.")
-        return
-
     # Set up the window thread
     window_thread = Thread(target=run_window)
     window_thread.daemon = True
@@ -40,7 +27,7 @@ def main():
 
     # Wait for the clusters numbers to be entered in the GUI
     while (
-        DataMedium.received_clusters is False
+        DataMedium.received_input is False
         or DataMedium.is_on_sorting() is True
         or DataMedium.is_on_placing() is True
     ):
@@ -67,7 +54,7 @@ def main():
     set_rows(row1, row2, data_rows, sorting_clusters, placing_clusters)
 
     # Write to the file
-    with open(filename, "w", newline="") as file:
+    with open(DataMedium.filename, "w", newline="") as file:
         writer = csv.writer(file)
 
         writer.writerow(row1)

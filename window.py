@@ -23,7 +23,7 @@ class Window:
         """Create and initialize the close frame."""
         self.window = tkinter.Tk()
         self.window.title("Cluster Tracking")
-        self.window.geometry("500x600")
+        self.window.geometry("500x650")
         self.window.configure(background=BACKGROUND_COLOR)
         self.window.iconphoto(False, tkinter.PhotoImage(file="TheTab_KGrgb_72ppi.png"))
 
@@ -50,6 +50,24 @@ class Window:
         """Create the frame for cluster input."""
         self.input_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
+        # File name
+        self.file_label = tkinter.Label(
+            self.input_frame,
+            text="File:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.file_label.pack()
+
+        self.file_input = tkinter.StringVar()
+        self.file_entry = tkinter.Entry(
+            self.input_frame,
+            textvariable=self.file_input,
+            font=("Arial", 12),
+        )
+        self.file_entry.focus_set()
+        self.file_entry.pack(pady=(0, 10))
+
         # Sorting
         self.sorting_label = tkinter.Label(
             self.input_frame,
@@ -65,7 +83,6 @@ class Window:
             textvariable=self.sorting_input,
             font=("Arial", 12),
         )
-        self.sorting_entry.focus_set()
         self.sorting_entry.pack(pady=(0, 10))
 
         # Placing
@@ -88,11 +105,11 @@ class Window:
         # Enter Button
         self.input_button = tkinter.Button(
             self.input_frame,
-            text="Set Clusters",
+            text="Set Input",
             font=("Arial Bold", 10),
         )
-        self.input_button.bind("<Button-1>", self.set_clusters)
-        self.input_button.bind("<Return>", self.set_clusters)
+        self.input_button.bind("<Button-1>", self.set_input)
+        self.input_button.bind("<Return>", self.set_input)
         self.input_button.pack(pady=10)
 
         self.input_frame.pack()
@@ -128,13 +145,25 @@ class Window:
 
         self.button_frame.pack(pady=(40, 0))
 
-    def set_clusters(self, event=None):
+    def set_input(self, event=None):
         """Check and set the cluster numbers."""
         # Get the input
+        file_input = self.file_input.get()
         sorting_input = self.sorting_input.get()
         placing_input = self.placing_input.get()
 
-        # Parse the input
+        # Parse the file input
+        if file_input.endswith(".csv") is False:
+            tkinter.messagebox.showwarning(
+                "Wait!", 'Please enter a file name ending in ".csv".'
+            )
+            self.file_input.set("")
+            self.sorting_input.set("")
+            self.placing_input.set("")
+            self.file_entry.focus_set()
+            return
+
+        # Parse the clusters input
         try:
             num_sorting_clusters = int(sorting_input)
             num_placing_clusters = int(placing_input)
@@ -143,19 +172,23 @@ class Window:
                 raise ValueError
 
         except ValueError:
-            tkinter.messagebox.showwarning("Wait!", "Please enter a whole number.")
+            tkinter.messagebox.showwarning(
+                "Wait!", "Please enter a whole number for the clusters."
+            )
+            self.file_input.set("")
             self.sorting_input.set("")
             self.placing_input.set("")
-            self.sorting_entry.focus_set()
+            self.file_entry.focus_set()
             return
 
-        DataMedium.set_clusters(num_sorting_clusters, num_placing_clusters)
+        DataMedium.set_input(file_input, num_sorting_clusters, num_placing_clusters)
 
         # Configure widgets as necessary
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
         self.placing_label.config(text=f"Placing Clusters: {num_placing_clusters}")
         self.current_cluster_label.config(text="Sorting Cluster 1")
 
+        self.file_entry.config(state="disabled")
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")

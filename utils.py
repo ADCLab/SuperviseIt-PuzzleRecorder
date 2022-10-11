@@ -7,8 +7,9 @@ class DataMedium:
 
     num_sorting_clusters: int = 0
     num_placing_clusters: int = 0
-    received_clusters: bool = False
+    received_input: bool = False
 
+    filename: str
     num_sorted_clusters: int = 0
     num_placed_clusters: int = 0
 
@@ -18,12 +19,13 @@ class DataMedium:
     is_in_trial: bool = False
 
     @classmethod
-    def set_clusters(cls, num_sorting_clusters: int, num_placing_clusters: int):
-        """Set the cluster numbers."""
+    def set_input(cls, filename, num_sorting_clusters: int, num_placing_clusters: int):
+        """Set the input values."""
         # Set the class variables
+        DataMedium.filename = filename
         DataMedium.num_sorting_clusters = num_sorting_clusters
         DataMedium.num_placing_clusters = num_placing_clusters
-        DataMedium.received_clusters = True
+        DataMedium.received_input = True
 
         # Initialize the times
         for _ in range(DataMedium.num_sorting_clusters):
