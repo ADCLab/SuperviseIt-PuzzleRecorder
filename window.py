@@ -142,6 +142,15 @@ class Window:
         )
         self.current_cluster_label.pack(pady=(10, 0))
 
+        # Piece Label
+        self.current_piece_label = tkinter.Label(
+            self.button_frame,
+            text="",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.current_piece_label.pack(pady=(10, 0))
+
         self.button_frame.pack(pady=(40, 0))
 
     def set_input(self, event=None):
@@ -186,12 +195,13 @@ class Window:
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
         self.placing_label.config(text=f"Placing Clusters: {num_placing_clusters}")
         self.current_cluster_label.config(text="Sorting Cluster 1")
+        self.current_piece_label.config(text="Sorted Pieces: 0")
 
         self.file_entry.config(state="disabled")
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
-        self.trial_button.config(state="normal", background="light green", activebackground="green")
+        self.trial_button.config(state="normal", background="green", activebackground="dark green")
 
     def trial(self, event=None):
         """Change the trial state."""
@@ -199,13 +209,13 @@ class Window:
         if DataMedium.is_in_trial is False:
 
             # Change the button
-            self.trial_button.config(text="Stop", background="light red", activebackground="red")
+            self.trial_button.config(text="Stop", background="red", activebackground="dark red")
             DataMedium.is_in_trial = True
 
         else:
 
             # Change the button
-            self.trial_button.config(text="Start", background="light green", activebackground="green")
+            self.trial_button.config(text="Start", background="green", activebackground="dark green")
             DataMedium.is_in_trial = False
 
             self.stop_trial()
@@ -216,24 +226,29 @@ class Window:
         if DataMedium.is_on_sorting():
 
             DataMedium.num_sorted_clusters += 1
+            DataMedium.piece_num = 1
 
             # Change the button names
             if DataMedium.is_on_sorting():
                 self.current_cluster_label.config(
                     text=f"Sorting Cluster {DataMedium.num_sorted_clusters + 1}"
                 )
+                self.current_piece_label.config(text="Sorted Pieces: 0")
             else:
                 self.current_cluster_label.config(text="Placing Cluster 1")
+                self.current_piece_label.config(text="Placed Pieces: 0")
 
         elif DataMedium.is_on_placing():
 
             DataMedium.num_placed_clusters += 1
+            DataMedium.piece_num = 1
 
             # Change the button names
             if DataMedium.is_on_placing():
                 self.current_cluster_label.config(
                     text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
                 )
+                self.current_piece_label.config(text="Placed Pieces: 0")
 
     def mark_date(self, event=None):
         """Mark the date in a trial."""
@@ -241,18 +256,22 @@ class Window:
         if DataMedium.is_in_trial is False:
             return
 
+        DataMedium.piece_num += 1
+
         # Determine if this is a sorting or placing trial
         if DataMedium.is_on_sorting():
 
             DataMedium.sorting_clusters_times[DataMedium.num_sorted_clusters].append(
                 datetime.now()
             )
+            self.current_piece_label.config(text=f"Sorted Pieces: {DataMedium.piece_num - 1}")
 
         elif DataMedium.is_on_placing():
 
             DataMedium.placing_clusters_times[DataMedium.num_placed_clusters].append(
                 datetime.now()
             )
+            self.current_piece_label.config(text=f"Placed Pieces: {DataMedium.piece_num - 1}")
 
     def start(self):
         """Start the window main loop."""

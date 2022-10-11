@@ -12,6 +12,7 @@ class DataMedium:
     filename: str
     num_sorted_clusters: int = 0
     num_placed_clusters: int = 0
+    piece_num: int = 1
 
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
