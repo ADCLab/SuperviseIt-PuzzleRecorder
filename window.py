@@ -123,8 +123,7 @@ class Window:
             self.button_frame,
             text="Start",
             font=("Arial Bold", 10),
-            background="cyan",
-            activebackground="cyan",
+            background="light gray",
             foreground="black",
             width=20,
             height=10,
@@ -192,7 +191,7 @@ class Window:
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
-        self.trial_button.config(state="normal")
+        self.trial_button.config(state="normal", background="light green", activebackground="green")
 
     def trial(self, event=None):
         """Change the trial state."""
@@ -200,13 +199,13 @@ class Window:
         if DataMedium.is_in_trial is False:
 
             # Change the button
-            self.trial_button.config(text="Stop")
+            self.trial_button.config(text="Stop", background="light red", activebackground="red")
             DataMedium.is_in_trial = True
 
         else:
 
             # Change the button
-            self.trial_button.config(text="Start")
+            self.trial_button.config(text="Start", background="light green", activebackground="green")
             DataMedium.is_in_trial = False
 
             self.stop_trial()
