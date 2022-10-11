@@ -8,19 +8,8 @@ from utils import DataMedium
 from window import Window
 
 
-def run_window():
-    """Run the window thread."""
-    window = Window()
-    window.start()
-
-
 def main():
-    """Run the entry code."""
-    # Set up the window thread
-    window_thread = Thread(target=run_window)
-    window_thread.daemon = True
-    window_thread.start()
-
+    """Run the program."""
     # Get the current date for entry
     current_date = datetime.now()
     date_string = current_date.strftime("%m/%d/%Y")
@@ -142,4 +131,12 @@ def set_rows(
 
 # Run the program
 if __name__ == "__main__":
-    main()
+
+    # Main thread
+    main_thread = Thread(target=main)
+    main_thread.daemon = True
+    main_thread.start()
+
+    # GUI
+    window = Window()
+    window.start()
