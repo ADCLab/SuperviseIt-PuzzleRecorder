@@ -55,10 +55,8 @@ class DataMedium:
 def resource_path(relative_path: str):
     """Get absolute path to resource."""
     try:
-        print('true')
         base_path = sys._MEIPASS  # type: ignore
     except Exception:
-        print('false')
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
