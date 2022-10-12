@@ -55,7 +55,7 @@ class Window:
         # File name
         self.file_label = tkinter.Label(
             self.input_frame,
-            text="File:",
+            text="Filename:",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
