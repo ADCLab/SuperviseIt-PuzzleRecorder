@@ -254,7 +254,12 @@ class Window:
                     text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
                 )
                 self.current_piece_label.config(text="Placed Pieces: 0")
+
             else:
+                # Wait for main to finish writing to the file
+                while DataMedium.is_finished_main is False:
+                    pass
+
                 self.on_closing()
 
     def mark_date(self, event=None):

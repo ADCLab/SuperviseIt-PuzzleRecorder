@@ -50,6 +50,8 @@ def main():
         writer.writerow(row2)
         writer.writerows(data_rows)
 
+    DataMedium.is_finished_main = True
+
 
 def set_cluster_data(cluster: list[list[str]], times: list[datetime], date_string: str):
     """Set cluster data."""

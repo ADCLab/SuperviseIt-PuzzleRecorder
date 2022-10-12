@@ -21,6 +21,7 @@ class DataMedium:
     placing_clusters_times: list[list[datetime]] = []
 
     is_in_trial: bool = False
+    is_finished_main: bool = False
 
     @classmethod
     def set_input(cls, filename, num_sorting_clusters: int, num_placing_clusters: int):
