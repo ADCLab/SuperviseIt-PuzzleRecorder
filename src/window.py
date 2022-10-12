@@ -166,8 +166,6 @@ class Window:
                 "Wait!", 'Please enter a file name ending in ".csv".'
             )
             self.file_input.set("")
-            self.sorting_input.set("")
-            self.placing_input.set("")
             self.file_entry.focus_set()
             return
 
@@ -183,10 +181,9 @@ class Window:
             tkinter.messagebox.showwarning(
                 "Wait!", "Please enter a whole number for the clusters."
             )
-            self.file_input.set("")
             self.sorting_input.set("")
             self.placing_input.set("")
-            self.file_entry.focus_set()
+            self.sorting_entry.focus_set()
             return
 
         DataMedium.set_input(file_input, num_sorting_clusters, num_placing_clusters)
