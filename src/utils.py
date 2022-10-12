@@ -1,4 +1,7 @@
 """Utility refactored from main."""
+
+import os
+import sys
 from datetime import datetime
 
 
@@ -47,3 +50,15 @@ class DataMedium:
             DataMedium.num_placed_clusters < DataMedium.num_placing_clusters
             and not DataMedium.is_on_sorting()
         )
+
+
+def resource_path(relative_path: str):
+    """Get absolute path to resource."""
+    try:
+        print('true')
+        base_path = sys._MEIPASS  # type: ignore
+    except Exception:
+        print('false')
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)

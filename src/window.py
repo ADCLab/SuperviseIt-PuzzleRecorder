@@ -4,7 +4,7 @@ import tkinter
 import tkinter.messagebox
 from datetime import datetime
 
-from utils import DataMedium
+from utils import DataMedium, resource_path
 
 BACKGROUND_COLOR = "gray"
 
@@ -25,7 +25,9 @@ class Window:
         self.window.title("Cluster Tracking")
         self.window.geometry("500x650")
         self.window.configure(background=BACKGROUND_COLOR)
-        self.window.iconphoto(False, tkinter.PhotoImage(file="TheTab_KGrgb_72ppi.png"))
+        self.window.iconphoto(
+            False, tkinter.PhotoImage(file=resource_path("TheTab_KGrgb_72ppi.png"))
+        )
 
         self.window.bind("<Control_L>", self.mark_date)
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -198,7 +200,9 @@ class Window:
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
-        self.trial_button.config(state="normal", background="green", activebackground="dark green")
+        self.trial_button.config(
+            state="normal", background="green", activebackground="dark green"
+        )
 
     def trial(self, event=None):
         """Change the trial state."""
@@ -206,13 +210,17 @@ class Window:
         if DataMedium.is_in_trial is False:
 
             # Change the button
-            self.trial_button.config(text="Stop", background="red", activebackground="dark red")
+            self.trial_button.config(
+                text="Stop", background="red", activebackground="dark red"
+            )
             DataMedium.is_in_trial = True
 
         else:
 
             # Change the button
-            self.trial_button.config(text="Start", background="green", activebackground="dark green")
+            self.trial_button.config(
+                text="Start", background="green", activebackground="dark green"
+            )
             DataMedium.is_in_trial = False
 
             self.stop_trial()
@@ -263,14 +271,18 @@ class Window:
             DataMedium.sorting_clusters_times[DataMedium.num_sorted_clusters].append(
                 datetime.now()
             )
-            self.current_piece_label.config(text=f"Sorted Pieces: {DataMedium.piece_num - 1}")
+            self.current_piece_label.config(
+                text=f"Sorted Pieces: {DataMedium.piece_num - 1}"
+            )
 
         elif DataMedium.is_on_placing():
 
             DataMedium.placing_clusters_times[DataMedium.num_placed_clusters].append(
                 datetime.now()
             )
-            self.current_piece_label.config(text=f"Placed Pieces: {DataMedium.piece_num - 1}")
+            self.current_piece_label.config(
+                text=f"Placed Pieces: {DataMedium.piece_num - 1}"
+            )
 
     def start(self):
         """Start the window main loop."""
