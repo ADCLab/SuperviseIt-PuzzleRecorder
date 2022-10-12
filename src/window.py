@@ -249,6 +249,8 @@ class Window:
                     text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
                 )
                 self.current_piece_label.config(text="Placed Pieces: 0")
+            else:
+                self.on_closing()
 
     def mark_date(self, event=None):
         """Mark the date in a trial."""
