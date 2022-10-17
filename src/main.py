@@ -67,7 +67,7 @@ def set_cluster_data(cluster: list[list[str]], times: list[datetime], date_strin
                     f"Piece {piece_num}",
                     date_string,
                     current_time.strftime("%H:%M:%S"),
-                    f'="{(interval.seconds + interval.microseconds / (10**6)):.3f}"',
+                    f"{(interval.seconds + interval.microseconds / (10**6)):.3f}",
                 ]
             )
             piece_num += 1
