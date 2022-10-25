@@ -160,6 +160,12 @@ class Window:
         sorting_input = self.sorting_input.get()
         placing_input = self.placing_input.get()
 
+        # Ensure that a file name was entered
+        if len(file_input) == 0:
+            tkinter.messagebox.showwarning("Wait!", "Please provide a file name.")
+            self.file_entry.focus_set()
+            return
+
         # Add the extension
         if file_input.endswith(".csv") is False:
             file_input += ".csv"
