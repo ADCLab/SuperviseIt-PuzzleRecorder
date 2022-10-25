@@ -171,7 +171,9 @@ class Window:
             num_sorting_clusters = int(sorting_input)
             num_placing_clusters = int(placing_input)
 
-            if num_sorting_clusters < 1 or num_placing_clusters < 1:
+            if (num_sorting_clusters < 0 or num_placing_clusters < 0) or (
+                num_sorting_clusters == 0 and num_placing_clusters == 0
+            ):
                 raise ValueError
 
         except ValueError:
