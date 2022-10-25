@@ -162,14 +162,9 @@ class Window:
         sorting_input = self.sorting_input.get()
         placing_input = self.placing_input.get()
 
-        # Parse the file input
+        # Add the extension
         if file_input.endswith(".csv") is False:
-            tkinter.messagebox.showwarning(
-                "Wait!", 'Please enter a file name ending in ".csv".'
-            )
-            self.file_input.set("")
-            self.file_entry.focus_set()
-            return
+            file_input += ".csv"
 
         # Parse the clusters input
         try:
