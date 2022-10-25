@@ -109,7 +109,7 @@ class Window:
             self.input_frame,
             text="Set Input",
             font=("Arial Bold", 10),
-            command=self.set_input
+            command=self.set_input,
         )
         self.input_button.pack(pady=10)
 
@@ -129,7 +129,7 @@ class Window:
             width=20,
             height=10,
             state="disabled",
-            command=self.trial_change
+            command=self.trial_change,
         )
         self.trial_button.pack()
 
