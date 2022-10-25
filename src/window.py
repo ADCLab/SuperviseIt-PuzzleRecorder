@@ -109,9 +109,8 @@ class Window:
             self.input_frame,
             text="Set Input",
             font=("Arial Bold", 10),
+            command=self.set_input
         )
-        self.input_button.bind("<Button-1>", self.set_input)
-        self.input_button.bind("<Return>", self.set_input)
         self.input_button.pack(pady=10)
 
         self.input_frame.pack()
@@ -130,9 +129,8 @@ class Window:
             width=20,
             height=10,
             state="disabled",
+            command=self.trial_change
         )
-        self.trial_button.bind("<Button-1>", self.trial)
-        self.trial_button.bind("<Return>", self.trial)
         self.trial_button.pack()
 
         # Cluster Label
@@ -201,7 +199,7 @@ class Window:
             state="normal", background="green", activebackground="dark green"
         )
 
-    def trial(self, event=None):
+    def trial_change(self, event=None):
         """Change the trial state."""
         # Check if the trial is ongoing
         if DataMedium.is_in_trial is False:
