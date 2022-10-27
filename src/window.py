@@ -240,9 +240,15 @@ class Window:
                     text=f"Sorting Cluster {WindowData.num_sorted_clusters + 1}"
                 )
                 self.current_piece_label.config(text="Sorted Pieces: 0")
-            else:
+
+            # Move to the placing clusters
+            elif WindowData.is_on_placing():
                 self.current_cluster_label.config(text="Placing Cluster 1")
                 self.current_piece_label.config(text="Placed Pieces: 0")
+
+            # No placing clusters, close early
+            else:
+                self.on_closing()
 
         elif WindowData.is_on_placing():
 
