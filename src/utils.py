@@ -10,22 +10,18 @@ class DataMedium:
 
     num_sorting_clusters: int = 0
     num_placing_clusters: int = 0
-    received_input: bool = False
 
     filename: str
-    num_sorted_clusters: int = 0
-    num_placed_clusters: int = 0
-    piece_num: int = 1
-
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
+    received_input: bool = False
     is_in_trial: bool = False
+    is_trials_complete: bool = False
     is_finished_main: bool = False
-    is_trials_complete = False
 
     @classmethod
-    def set_input(cls, filename, num_sorting_clusters: int, num_placing_clusters: int):
+    def set_input(cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int):
         """Set the input values."""
         # Set the class variables
         DataMedium.filename = filename
@@ -40,18 +36,23 @@ class DataMedium:
         for _ in range(DataMedium.num_placing_clusters):
             DataMedium.placing_clusters_times.append(list())
 
+
+class WindowData:
+    """A class to hold data for the window."""
+
+    piece_num: int = 1
+    num_sorted_clusters: int = 0
+    num_placed_clusters: int = 0
+
     @classmethod
     def is_on_sorting(cls) -> bool:
         """Check if the trial is a sorting trial."""
-        return DataMedium.num_sorted_clusters < DataMedium.num_sorting_clusters
+        return WindowData.num_sorted_clusters < DataMedium.num_sorting_clusters
 
     @classmethod
     def is_on_placing(cls) -> bool:
         """Check if the trial is a placing trial."""
-        return (
-            DataMedium.num_placed_clusters < DataMedium.num_placing_clusters
-            and not DataMedium.is_on_sorting()
-        )
+        return WindowData.num_sorted_clusters < DataMedium.num_sorting_clusters
 
 
 def resource_path(relative_path: str):

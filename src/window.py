@@ -4,7 +4,7 @@ import tkinter
 import tkinter.messagebox
 from datetime import datetime
 
-from utils import DataMedium, resource_path
+from utils import DataMedium, WindowData, resource_path
 
 BACKGROUND_COLOR = "gray"
 
@@ -229,30 +229,30 @@ class Window:
     def stop_trial(self):
         """Stop a trial."""
         # Determine if this is a sorting or placing trial
-        if DataMedium.is_on_sorting():
+        if WindowData.is_on_sorting():
 
-            DataMedium.num_sorted_clusters += 1
-            DataMedium.piece_num = 1
+            WindowData.num_sorted_clusters += 1
+            WindowData.piece_num = 1
 
             # Change the button names
-            if DataMedium.is_on_sorting():
+            if WindowData.is_on_sorting():
                 self.current_cluster_label.config(
-                    text=f"Sorting Cluster {DataMedium.num_sorted_clusters + 1}"
+                    text=f"Sorting Cluster {WindowData.num_sorted_clusters + 1}"
                 )
                 self.current_piece_label.config(text="Sorted Pieces: 0")
             else:
                 self.current_cluster_label.config(text="Placing Cluster 1")
                 self.current_piece_label.config(text="Placed Pieces: 0")
 
-        elif DataMedium.is_on_placing():
+        elif WindowData.is_on_placing():
 
-            DataMedium.num_placed_clusters += 1
-            DataMedium.piece_num = 1
+            WindowData.num_placed_clusters += 1
+            WindowData.piece_num = 1
 
             # Change the button names
-            if DataMedium.is_on_placing():
+            if WindowData.is_on_placing():
                 self.current_cluster_label.config(
-                    text=f"Placing Cluster {DataMedium.num_placed_clusters + 1}"
+                    text=f"Placing Cluster {WindowData.num_placed_clusters + 1}"
                 )
                 self.current_piece_label.config(text="Placed Pieces: 0")
 
@@ -265,25 +265,25 @@ class Window:
         if DataMedium.is_in_trial is False:
             return
 
-        DataMedium.piece_num += 1
+        WindowData.piece_num += 1
 
         # Determine if this is a sorting or placing trial
-        if DataMedium.is_on_sorting():
+        if WindowData.is_on_sorting():
 
-            DataMedium.sorting_clusters_times[DataMedium.num_sorted_clusters].append(
+            DataMedium.sorting_clusters_times[WindowData.num_sorted_clusters].append(
                 datetime.now()
             )
             self.current_piece_label.config(
-                text=f"Sorted Pieces: {DataMedium.piece_num - 1}"
+                text=f"Sorted Pieces: {WindowData.piece_num - 1}"
             )
 
-        elif DataMedium.is_on_placing():
+        elif WindowData.is_on_placing():
 
-            DataMedium.placing_clusters_times[DataMedium.num_placed_clusters].append(
+            DataMedium.placing_clusters_times[WindowData.num_placed_clusters].append(
                 datetime.now()
             )
             self.current_piece_label.config(
-                text=f"Placed Pieces: {DataMedium.piece_num - 1}"
+                text=f"Placed Pieces: {WindowData.piece_num - 1}"
             )
 
     def start(self):
