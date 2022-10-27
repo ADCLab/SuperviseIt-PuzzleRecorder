@@ -38,6 +38,9 @@ class DataMedium:
 class WindowData:
     """A class to hold data for the window."""
 
+    is_only_sorting: bool = False
+    is_only_placing: bool = False
+
     piece_num: int = 1
     num_sorted_clusters: int = 0
     num_placed_clusters: int = 0

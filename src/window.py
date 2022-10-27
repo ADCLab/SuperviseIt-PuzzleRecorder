@@ -77,7 +77,6 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.sorting_label.pack()
 
         self.sorting_input = tkinter.StringVar()
         self.sorting_entry = tkinter.Entry(
@@ -85,7 +84,10 @@ class Window:
             textvariable=self.sorting_input,
             font=("Arial", 12),
         )
-        self.sorting_entry.pack(pady=(0, 10))
+
+        if WindowData.is_only_placing is False:
+            self.sorting_label.pack()
+            self.sorting_entry.pack(pady=(0, 10))
 
         # Placing
         self.placing_label = tkinter.Label(
@@ -94,7 +96,6 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.placing_label.pack()
 
         self.placing_input = tkinter.StringVar()
         self.placing_entry = tkinter.Entry(
@@ -102,7 +103,10 @@ class Window:
             textvariable=self.placing_input,
             font=("Arial", 12),
         )
-        self.placing_entry.pack(pady=(0, 10))
+
+        if WindowData.is_only_sorting is False:
+            self.placing_label.pack()
+            self.placing_entry.pack(pady=(0, 10))
 
         # Enter Button
         self.input_button = tkinter.Button(
@@ -172,8 +176,8 @@ class Window:
 
         # Parse the clusters input
         try:
-            num_sorting_clusters = int(sorting_input)
-            num_placing_clusters = int(placing_input)
+            num_sorting_clusters = 0 if WindowData.is_only_placing else int(sorting_input)
+            num_placing_clusters = 0 if WindowData.is_only_sorting else int(placing_input)
 
             if (num_sorting_clusters < 0 or num_placing_clusters < 0) or (
                 num_sorting_clusters == 0 and num_placing_clusters == 0
