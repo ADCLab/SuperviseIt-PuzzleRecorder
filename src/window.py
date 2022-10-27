@@ -15,6 +15,103 @@ class Window:
     def __init__(self):
         """Initialize the window."""
         self.create_window()
+        self.init_menu()
+
+    def init_menu(self):
+        """Initialize the menu."""
+        self.create_menu_header()
+        self.create_menu_buttons()
+
+    def create_menu_header(self):
+        """Create the menu header."""
+        self.menu_header_frame = tkinter.Frame(
+            self.window, pady=10, background=BACKGROUND_COLOR
+        )
+
+        self.menu_title_label = tkinter.Label(
+            self.menu_header_frame,
+            text="Cluster Tracking",
+            font=("Times New Roman", 40),
+            background=BACKGROUND_COLOR,
+        )
+        self.menu_title_label.pack()
+
+        self.menu_subtitle_label = tkinter.Label(
+            self.menu_header_frame,
+            text="Choose which type of experiment you will be running",
+            font=("Times New Roman", 15),
+            background=BACKGROUND_COLOR,
+        )
+        self.menu_subtitle_label.pack(pady=(30, 0))
+
+        self.menu_header_frame.pack()
+
+    def create_menu_buttons(self):
+        """Create the cluster options."""
+        self.menu_button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
+
+        self.sorting_button = tkinter.Button(
+            self.menu_button_frame,
+            text="Sorting\nOnly",
+            font=("Arial Bold", 10),
+            background="light green",
+            foreground="black",
+            width=10,
+            height=5,
+            state="normal",
+            command=self.menu_only_sorting,
+        )
+        self.sorting_button.pack(side=tkinter.LEFT, padx=(0, 10))
+
+        self.both_button = tkinter.Button(
+            self.menu_button_frame,
+            text="Both",
+            font=("Arial Bold", 10),
+            background="light green",
+            foreground="black",
+            width=10,
+            height=5,
+            state="normal",
+            command=self.menu_both,
+        )
+        self.both_button.pack(side=tkinter.RIGHT, padx=(10, 0))
+
+        self.placing_button = tkinter.Button(
+            self.menu_button_frame,
+            text="Placing\nOnly",
+            font=("Arial Bold", 10),
+            background="light green",
+            foreground="black",
+            width=10,
+            height=5,
+            state="normal",
+            command=self.menu_only_placing,
+        )
+        self.placing_button.pack(padx=(10, 10))
+
+        self.menu_button_frame.pack(pady=(10, 0))
+
+    def menu_only_sorting(self):
+        """Set only sorting."""
+        WindowData.is_only_sorting = True
+        self.init_main()
+
+    def menu_only_placing(self):
+        """Set only placing."""
+        WindowData.is_only_placing = True
+        self.init_main()
+
+    def menu_both(self):
+        """Set both."""
+        self.init_main()
+
+    def init_main(self):
+        """Initialize the main window."""
+        # Delete the menu
+        for widget in self.window.winfo_children():
+            widget.destroy()
+
+        # Create the main
         self.create_header_frame()
         self.create_input_frame()
         self.create_button_frame()
