@@ -20,7 +20,9 @@ class DataMedium:
     is_finished_main: bool = False
 
     @classmethod
-    def set_input(cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int):
+    def set_input(
+        cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int
+    ):
         """Set the input values."""
         # Set the class variables
         DataMedium.filename = filename

@@ -196,9 +196,19 @@ class Window:
 
         # Parse the clusters input
         try:
-            num_sorting_clusters = 0 if WindowData.is_only_placing else int(sorting_input)
-            num_placing_clusters = 0 if WindowData.is_only_sorting else int(placing_input)
+            # Set 0 if there are no sorting
+            if WindowData.is_only_placing:
+                num_sorting_clusters = 0
+            else:
+                num_sorting_clusters = int(sorting_input)
 
+            # Set 0 if there are no placing
+            if WindowData.is_only_sorting:
+                num_placing_clusters = 0
+            else:
+                num_placing_clusters = int(placing_input)
+
+            # Check for valid input
             if (num_sorting_clusters < 0 or num_placing_clusters < 0) or (
                 num_sorting_clusters == 0 and num_placing_clusters == 0
             ):
@@ -226,9 +236,7 @@ class Window:
         self.input_button.config(state="disabled")
 
         # Button
-        self.start_button.config(
-            state="normal", background="green"
-        )
+        self.start_button.config(state="normal", background="green")
 
         # Progress label text
         if WindowData.is_on_sorting():
@@ -241,12 +249,8 @@ class Window:
     def start_trial(self, event=None):
         """Start a trial."""
         # Change the button
-        self.start_button.config(
-            state="disabled", background="light gray"
-        )
-        self.stop_button.config(
-            state="normal", background="red"
-        )
+        self.start_button.config(state="disabled", background="light gray")
+        self.stop_button.config(state="normal", background="red")
         WindowData.is_in_trial = True
 
     def stop_trial(self):
@@ -289,12 +293,8 @@ class Window:
                 self.on_closing()
 
         # Change the button
-        self.start_button.config(
-            state="normal", background="green"
-        )
-        self.stop_button.config(
-            state="disabled", background="light gray"
-        )
+        self.start_button.config(state="normal", background="green")
+        self.stop_button.config(state="disabled", background="light gray")
         WindowData.is_in_trial = False
 
     def mark_date(self, event=None):
