@@ -18,6 +18,7 @@ class Window:
         self.create_header_frame()
         self.create_input_frame()
         self.create_button_frame()
+        self.create_progress_frame()
 
     def create_window(self):
         """Create and initialize the close frame."""
@@ -120,26 +121,45 @@ class Window:
         self.input_frame.pack()
 
     def create_button_frame(self):
-        """Create the frame for cluster input."""
+        """Create the frame for trial change."""
         self.button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
         # Trial Button
-        self.trial_button = tkinter.Button(
+        self.start_button = tkinter.Button(
             self.button_frame,
-            text="Start",
+            text="Start Trial",
             font=("Arial Bold", 10),
             background="light gray",
             foreground="black",
             width=20,
             height=10,
             state="disabled",
-            command=self.trial_change,
+            command=self.start_trial,
         )
-        self.trial_button.pack()
+        self.start_button.pack(side=tkinter.LEFT, padx=(0, 10))
+
+        self.stop_button = tkinter.Button(
+            self.button_frame,
+            text="Stop Trial",
+            font=("Arial Bold", 10),
+            background="light gray",
+            foreground="black",
+            width=20,
+            height=10,
+            state="disabled",
+            command=self.stop_trial,
+        )
+        self.stop_button.pack(side=tkinter.RIGHT, padx=(10, 0))
+
+        self.button_frame.pack(pady=(40, 0))
+
+    def create_progress_frame(self):
+        """Create the frame for progress display."""
+        self.progress_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
         # Cluster Label
         self.current_cluster_label = tkinter.Label(
-            self.button_frame,
+            self.progress_frame,
             text="",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
@@ -148,14 +168,14 @@ class Window:
 
         # Piece Label
         self.current_piece_label = tkinter.Label(
-            self.button_frame,
+            self.progress_frame,
             text="",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
         self.current_piece_label.pack(pady=(10, 0))
 
-        self.button_frame.pack(pady=(40, 0))
+        self.progress_frame.pack()
 
     def set_input(self, event=None):
         """Check and set the cluster numbers."""
@@ -206,8 +226,8 @@ class Window:
         self.input_button.config(state="disabled")
 
         # Button
-        self.trial_button.config(
-            state="normal", background="green", activebackground="dark green"
+        self.start_button.config(
+            state="normal", background="green"
         )
 
         # Progress label text
@@ -218,26 +238,16 @@ class Window:
             self.current_cluster_label.config(text="Placing Cluster 1")
             self.current_piece_label.config(text="Placed Pieces: 0")
 
-    def trial_change(self, event=None):
-        """Change the trial state."""
-        # Check if the trial is ongoing
-        if WindowData.is_in_trial is False:
-
-            # Change the button
-            self.trial_button.config(
-                text="Stop", background="red", activebackground="dark red"
-            )
-            WindowData.is_in_trial = True
-
-        else:
-
-            # Change the button
-            self.trial_button.config(
-                text="Start", background="green", activebackground="dark green"
-            )
-            WindowData.is_in_trial = False
-
-            self.stop_trial()
+    def start_trial(self, event=None):
+        """Start a trial."""
+        # Change the button
+        self.start_button.config(
+            state="disabled", background="light gray"
+        )
+        self.stop_button.config(
+            state="normal", background="red"
+        )
+        WindowData.is_in_trial = True
 
     def stop_trial(self):
         """Stop a trial."""
@@ -277,6 +287,15 @@ class Window:
 
             else:
                 self.on_closing()
+
+        # Change the button
+        self.start_button.config(
+            state="normal", background="green"
+        )
+        self.stop_button.config(
+            state="disabled", background="light gray"
+        )
+        WindowData.is_in_trial = False
 
     def mark_date(self, event=None):
         """Mark the date in a trial."""
