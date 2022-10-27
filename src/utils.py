@@ -15,6 +15,7 @@ class DataMedium:
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
+    is_input_set: bool = False
     is_trials_complete: bool = False
     is_finished_main: bool = False
 
@@ -25,7 +26,7 @@ class DataMedium:
         DataMedium.filename = filename
         DataMedium.num_sorting_clusters = num_sorting_clusters
         DataMedium.num_placing_clusters = num_placing_clusters
-        DataMedium.received_input = True
+        DataMedium.is_input_set = True
 
         # Initialize the times
         for _ in range(DataMedium.num_sorting_clusters):

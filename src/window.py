@@ -311,9 +311,13 @@ class Window:
 
     def on_closing(self):
         """Handle closing the window."""
+        # Check if no trials have started
+        if DataMedium.is_input_set is False:
+            self.window.quit()
+            return
+
         # Wait for main to finish writing to the file
         DataMedium.is_trials_complete = True
-
         while DataMedium.is_finished_main is False:
             pass
 
