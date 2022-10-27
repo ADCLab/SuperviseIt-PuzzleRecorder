@@ -52,7 +52,7 @@ class WindowData:
     @classmethod
     def is_on_placing(cls) -> bool:
         """Check if the trial is a placing trial."""
-        return WindowData.num_sorted_clusters < DataMedium.num_sorting_clusters
+        return WindowData.num_placed_clusters < DataMedium.num_placing_clusters
 
 
 def resource_path(relative_path: str):
