@@ -194,16 +194,25 @@ class Window:
         # Configure widgets as necessary
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
         self.placing_label.config(text=f"Placing Clusters: {num_placing_clusters}")
-        self.current_cluster_label.config(text="Sorting Cluster 1")
-        self.current_piece_label.config(text="Sorted Pieces: 0")
 
+        # Disable input
         self.file_entry.config(state="disabled")
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.input_button.config(state="disabled")
+
+        # Button
         self.trial_button.config(
             state="normal", background="green", activebackground="dark green"
         )
+
+        # Progress label text
+        if WindowData.is_on_sorting():
+            self.current_cluster_label.config(text="Sorting Cluster 1")
+            self.current_piece_label.config(text="Sorted Pieces: 0")
+        else:
+            self.current_cluster_label.config(text="Placing Cluster 1")
+            self.current_piece_label.config(text="Placed Pieces: 0")
 
     def trial_change(self, event=None):
         """Change the trial state."""
