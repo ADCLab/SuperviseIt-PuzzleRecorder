@@ -257,10 +257,6 @@ class Window:
                 self.current_piece_label.config(text="Placed Pieces: 0")
 
             else:
-                # Wait for main to finish writing to the file
-                while DataMedium.is_finished_main is False:
-                    pass
-
                 self.on_closing()
 
     def mark_date(self, event=None):
@@ -296,4 +292,10 @@ class Window:
 
     def on_closing(self):
         """Handle closing the window."""
+        # Wait for main to finish writing to the file
+        DataMedium.is_trials_complete = True
+
+        while DataMedium.is_finished_main is False:
+            pass
+
         self.window.quit()

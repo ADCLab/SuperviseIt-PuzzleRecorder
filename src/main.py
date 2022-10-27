@@ -15,11 +15,7 @@ def main():
     date_string = current_date.strftime("%m/%d/%Y")
 
     # Wait for the clusters numbers to be entered in the GUI
-    while (
-        DataMedium.received_input is False
-        or DataMedium.is_on_sorting() is True
-        or DataMedium.is_on_placing() is True
-    ):
+    while DataMedium.is_trials_complete is False:
         pass
 
     # Declare clusters
