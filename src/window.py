@@ -94,17 +94,17 @@ class Window:
 
         self.menu_button_frame.pack(pady=(10, 0))
 
-    def menu_only_sorting(self):
+    def menu_only_sorting(self, event=None):
         """Set only sorting."""
         WindowData.is_only_sorting = True
         self.init_main()
 
-    def menu_only_placing(self):
+    def menu_only_placing(self, event=None):
         """Set only placing."""
         WindowData.is_only_placing = True
         self.init_main()
 
-    def menu_both(self):
+    def menu_both(self, event=None):
         """Set both."""
         self.init_main()
 
