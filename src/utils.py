@@ -15,8 +15,6 @@ class DataMedium:
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
-    received_input: bool = False
-    is_in_trial: bool = False
     is_trials_complete: bool = False
     is_finished_main: bool = False
 
@@ -43,6 +41,8 @@ class WindowData:
     piece_num: int = 1
     num_sorted_clusters: int = 0
     num_placed_clusters: int = 0
+
+    is_in_trial: bool = False
 
     @classmethod
     def is_on_sorting(cls) -> bool:

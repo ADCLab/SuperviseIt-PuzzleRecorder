@@ -208,13 +208,13 @@ class Window:
     def trial_change(self, event=None):
         """Change the trial state."""
         # Check if the trial is ongoing
-        if DataMedium.is_in_trial is False:
+        if WindowData.is_in_trial is False:
 
             # Change the button
             self.trial_button.config(
                 text="Stop", background="red", activebackground="dark red"
             )
-            DataMedium.is_in_trial = True
+            WindowData.is_in_trial = True
 
         else:
 
@@ -222,7 +222,7 @@ class Window:
             self.trial_button.config(
                 text="Start", background="green", activebackground="dark green"
             )
-            DataMedium.is_in_trial = False
+            WindowData.is_in_trial = False
 
             self.stop_trial()
 
@@ -262,7 +262,7 @@ class Window:
     def mark_date(self, event=None):
         """Mark the date in a trial."""
         # Return if there is not a trial ongoing
-        if DataMedium.is_in_trial is False:
+        if WindowData.is_in_trial is False:
             return
 
         WindowData.piece_num += 1
