@@ -132,7 +132,7 @@ class Window:
         )
 
         self.window.bind("<Control_L>", self.mark_date)
-        self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.window.protocol("WM_DELETE_WINDOW", self.close)
 
     def create_header_frame(self):
         """Create and initialize the header."""
@@ -439,7 +439,7 @@ class Window:
         # Send the values
         DataMedium.num_missorted = missorted
         DataMedium.num_unsorted = unsorted
-        self.on_closing()
+        self.close()
 
     def start_trial(self, event=None):
         """Start a trial."""
@@ -536,7 +536,7 @@ class Window:
         """Start the window main loop."""
         self.window.mainloop()
 
-    def on_closing(self):
+    def close(self):
         """Handle closing the window."""
         # Check if no trials have started
         if DataMedium.is_input_set is False:
