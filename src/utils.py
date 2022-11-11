@@ -17,10 +17,15 @@ class DataMedium:
 
     num_missorted: int = 0
     num_unsorted: int = 0
+    num_misplaced: int = 0
+    num_unplaced: int = 0
 
     is_input_set: bool = False
     is_trials_complete: bool = False
     is_finished_main: bool = False
+
+    is_only_sorting: bool = False
+    is_only_placing: bool = False
 
     @classmethod
     def set_input(
@@ -43,9 +48,6 @@ class DataMedium:
 
 class WindowData:
     """A class to hold data for the window."""
-
-    is_only_sorting: bool = False
-    is_only_placing: bool = False
 
     piece_num: int = 1
     num_sorted_clusters: int = 0

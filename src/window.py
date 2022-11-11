@@ -96,12 +96,12 @@ class Window:
 
     def menu_only_sorting(self, event=None):
         """Set only sorting."""
-        WindowData.is_only_sorting = True
+        DataMedium.is_only_sorting = True
         self.init_main()
 
     def menu_only_placing(self, event=None):
         """Set only placing."""
-        WindowData.is_only_placing = True
+        DataMedium.is_only_placing = True
         self.init_main()
 
     def menu_both(self, event=None):
@@ -125,7 +125,7 @@ class Window:
         """Create and initialize the close frame."""
         self.window = tkinter.Tk()
         self.window.title("Cluster Tracking")
-        self.window.geometry("500x650")
+        self.window.geometry("500x700")
         self.window.configure(background=BACKGROUND_COLOR)
         self.window.iconphoto(
             False, tkinter.PhotoImage(file=resource_path("TheTab_KGrgb_72ppi.png"))
@@ -187,7 +187,7 @@ class Window:
             font=("Arial", 12),
         )
 
-        if WindowData.is_only_placing is False:
+        if DataMedium.is_only_placing is False:
             self.sorting_label.pack()
             self.sorting_entry.pack(pady=(0, 10))
 
@@ -206,7 +206,7 @@ class Window:
             font=("Arial", 12),
         )
 
-        if WindowData.is_only_sorting is False:
+        if DataMedium.is_only_sorting is False:
             self.placing_label.pack()
             self.placing_entry.pack(pady=(0, 10))
 
@@ -284,9 +284,43 @@ class Window:
         """Create the frame for errors."""
         self.errors_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
+        # Create the frames
+        self.errors_input_frame = tkinter.Frame(self.errors_frame, background=BACKGROUND_COLOR)
+        if DataMedium.is_only_placing is False:
+            self.create_sorting_errors_frame()
+        if DataMedium.is_only_sorting is False:
+            self.create_placing_errors_frame()
+        self.errors_input_frame.pack()
+
+        # Pack the frames
+        if DataMedium.is_only_sorting is False and DataMedium.is_only_placing is False:
+            self.sorting_errors_frame.pack(side=tkinter.LEFT, padx=(0, 10))
+            self.placing_errors_frame.pack(side=tkinter.RIGHT, padx=(10, 0))
+
+        elif DataMedium.is_only_sorting is True:
+            self.sorting_errors_frame.pack()
+        elif DataMedium.is_only_placing is True:
+            self.placing_errors_frame.pack()
+
+        # Enter Button
+        self.error_input_button = tkinter.Button(
+            self.errors_frame,
+            text="Submit Errors",
+            font=("Arial Bold", 10),
+            command=self.submit_errors,
+            state="disabled"
+        )
+        self.error_input_button.pack(pady=(0, 10))
+
+        self.errors_frame.pack()
+
+    def create_sorting_errors_frame(self):
+        """Create the frame for sorting errors."""
+        self.sorting_errors_frame = tkinter.Frame(self.errors_input_frame, background=BACKGROUND_COLOR)
+
         # Missorted
         self.missorted_frame = tkinter.Frame(
-            self.errors_frame, background=BACKGROUND_COLOR
+            self.sorting_errors_frame, background=BACKGROUND_COLOR
         )
         self.missorted_label = tkinter.Label(
             self.missorted_frame,
@@ -302,6 +336,7 @@ class Window:
             textvariable=self.missorted_input,
             font=("Arial", 12),
             state="disabled",
+            width=5
         )
         self.missorted_entry.pack(side=tkinter.RIGHT)
 
@@ -309,7 +344,7 @@ class Window:
 
         # Unsorted
         self.unsorted_frame = tkinter.Frame(
-            self.errors_frame, background=BACKGROUND_COLOR
+            self.sorting_errors_frame, background=BACKGROUND_COLOR
         )
         self.unsorted_label = tkinter.Label(
             self.unsorted_frame,
@@ -325,22 +360,63 @@ class Window:
             textvariable=self.unsorted_input,
             font=("Arial", 12),
             state="disabled",
+            width=5
         )
         self.unsorted_entry.pack(side=tkinter.RIGHT)
 
         self.unsorted_frame.pack(pady=(0, 10))
 
-        # Enter Button
-        self.error_input_button = tkinter.Button(
-            self.errors_frame,
-            text="Submit Errors",
-            font=("Arial Bold", 10),
-            command=self.submit_errors,
-            state="disabled"
-        )
-        self.error_input_button.pack(pady=(0, 10))
+    def create_placing_errors_frame(self):
+        """Create the frame for placing errors."""
+        self.placing_errors_frame = tkinter.Frame(self.errors_input_frame, background=BACKGROUND_COLOR)
 
-        self.errors_frame.pack()
+        # Missorted
+        self.misplaced_frame = tkinter.Frame(
+            self.placing_errors_frame, background=BACKGROUND_COLOR
+        )
+        self.misplaced_label = tkinter.Label(
+            self.misplaced_frame,
+            text="Misplaced:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.misplaced_label.pack(side=tkinter.LEFT)
+
+        self.misplaced_input = tkinter.StringVar()
+        self.misplaced_entry = tkinter.Entry(
+            self.misplaced_frame,
+            textvariable=self.misplaced_input,
+            font=("Arial", 12),
+            state="disabled",
+            width=5
+        )
+        self.misplaced_entry.pack(side=tkinter.RIGHT)
+
+        self.misplaced_frame.pack(pady=(0, 10))
+
+        # Unsorted
+        self.unplaced_frame = tkinter.Frame(
+            self.placing_errors_frame, background=BACKGROUND_COLOR
+        )
+        self.unplaced_label = tkinter.Label(
+            self.unplaced_frame,
+            text="Unplaced:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.unplaced_label.pack(side=tkinter.LEFT)
+
+        self.unplaced_input = tkinter.StringVar()
+        self.unplaced_entry = tkinter.Entry(
+            self.unplaced_frame,
+            textvariable=self.unplaced_input,
+            font=("Arial", 12),
+            state="disabled",
+            width=5
+        )
+        self.unplaced_entry.pack(side=tkinter.RIGHT)
+
+        self.unplaced_frame.pack(pady=(0, 10))
 
     def set_input(self, event=None):
         """Check and set the cluster numbers."""
@@ -362,13 +438,13 @@ class Window:
         # Parse the clusters input
         try:
             # Set 0 if there are no sorting
-            if WindowData.is_only_placing:
+            if DataMedium.is_only_placing:
                 num_sorting_clusters = 0
             else:
                 num_sorting_clusters = int(sorting_input)
 
             # Set 0 if there are no placing
-            if WindowData.is_only_sorting:
+            if DataMedium.is_only_sorting:
                 num_placing_clusters = 0
             else:
                 num_placing_clusters = int(placing_input)
@@ -414,17 +490,28 @@ class Window:
     def submit_errors(self, event=None):
         """Check and set the errors."""
         # Get the input
-        missorted_input = self.missorted_input.get()
-        unsorted_input = self.unsorted_input.get()
+        missorted_input = 0
+        unsorted_input = 0
+        misplaced_input = 0
+        unplaced_input = 0
+
+        if DataMedium.is_only_placing is False:
+            missorted_input = self.missorted_input.get()
+            unsorted_input = self.unsorted_input.get()
+        if DataMedium.is_only_sorting is False:
+            misplaced_input = self.misplaced_input.get()
+            unplaced_input = self.unplaced_input.get()
 
         # Parse the clusters input
         try:
 
             missorted = int(missorted_input)
             unsorted = int(unsorted_input)
+            misplaced = int(misplaced_input)
+            unplaced = int(unplaced_input)
 
             # Check for valid input
-            if missorted < 0 or unsorted < 0:
+            if missorted < 0 or unsorted < 0 or misplaced < 0 or unplaced < 0:
                 raise ValueError
 
         except ValueError:
@@ -433,12 +520,16 @@ class Window:
             )
             self.missorted_input.set("")
             self.unsorted_input.set("")
+            self.misplaced_input.set("")
+            self.unplaced_input.set("")
             self.missorted_entry.focus_set()
             return
 
         # Send the values
         DataMedium.num_missorted = missorted
         DataMedium.num_unsorted = unsorted
+        DataMedium.num_misplaced = misplaced
+        DataMedium.num_unplaced = unplaced
         self.close()
 
     def start_trial(self, event=None):
@@ -473,8 +564,13 @@ class Window:
                 self.start_button.config(state="disabled", background="light gray")
                 self.stop_button.config(state="disabled", background="light gray")
 
-                self.missorted_entry.config(state="normal")
-                self.unsorted_entry.config(state="normal")
+                if DataMedium.is_only_placing is False:
+                    self.missorted_entry.config(state="normal")
+                    self.unsorted_entry.config(state="normal")
+                if DataMedium.is_only_sorting is False:
+                    self.misplaced_entry.config(state="normal")
+                    self.unplaced_entry.config(state="normal")
+
                 self.error_input_button.config(state="normal")
                 return
 
@@ -495,8 +591,13 @@ class Window:
                 self.start_button.config(state="disabled", background="light gray")
                 self.stop_button.config(state="disabled", background="light gray")
 
-                self.missorted_entry.config(state="normal")
-                self.unsorted_entry.config(state="normal")
+                if DataMedium.is_only_placing is False:
+                    self.missorted_entry.config(state="normal")
+                    self.unsorted_entry.config(state="normal")
+                if DataMedium.is_only_sorting is False:
+                    self.misplaced_entry.config(state="normal")
+                    self.unplaced_entry.config(state="normal")
+
                 self.error_input_button.config(state="normal")
                 return
 

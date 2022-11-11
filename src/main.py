@@ -51,8 +51,18 @@ def main():
 
         # Errors
         writer.writerow([])
-        writer.writerow(["Missorted", "Unsorted"])
-        writer.writerow([DataMedium.num_missorted, DataMedium.num_unsorted])
+        error_header_row = []
+        error_data_row = []
+
+        if DataMedium.is_only_placing is False:
+            error_header_row += ["Missorted", "Unsorted"]
+            error_data_row += [DataMedium.num_missorted, DataMedium.num_unsorted]
+        if DataMedium.is_only_sorting is False:
+            error_header_row += ["Misplaced", "Unplaced"]
+            error_data_row += [DataMedium.num_misplaced, DataMedium.num_unplaced]
+
+        writer.writerow(error_header_row)
+        writer.writerow(error_data_row)
 
     DataMedium.is_finished_main = True
 
