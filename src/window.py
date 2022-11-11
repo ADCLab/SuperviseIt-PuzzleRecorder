@@ -119,6 +119,7 @@ class Window:
         self.create_input_frame()
         self.create_button_frame()
         self.create_progress_frame()
+        self.create_errors_frame()
 
     def create_window(self):
         """Create and initialize the close frame."""
@@ -216,7 +217,7 @@ class Window:
             font=("Arial Bold", 10),
             command=self.set_input,
         )
-        self.input_button.pack(pady=10)
+        self.input_button.pack(pady=(10, 0))
 
         self.input_frame.pack()
 
@@ -277,7 +278,69 @@ class Window:
         )
         self.current_piece_label.pack(pady=(10, 0))
 
-        self.progress_frame.pack()
+        self.progress_frame.pack(pady=(0, 10))
+
+    def create_errors_frame(self):
+        """Create the frame for errors."""
+        self.errors_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
+
+        # Missorted
+        self.missorted_frame = tkinter.Frame(
+            self.errors_frame, background=BACKGROUND_COLOR
+        )
+        self.missorted_label = tkinter.Label(
+            self.missorted_frame,
+            text="Missorted:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.missorted_label.pack(side=tkinter.LEFT)
+
+        self.missorted_input = tkinter.StringVar()
+        self.missorted_entry = tkinter.Entry(
+            self.missorted_frame,
+            textvariable=self.missorted_input,
+            font=("Arial", 12),
+            state="disabled",
+        )
+        self.missorted_entry.pack(side=tkinter.RIGHT)
+
+        self.missorted_frame.pack(pady=(0, 10))
+
+        # Unsorted
+        self.unsorted_frame = tkinter.Frame(
+            self.errors_frame, background=BACKGROUND_COLOR
+        )
+        self.unsorted_label = tkinter.Label(
+            self.unsorted_frame,
+            text="Unsorted:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.unsorted_label.pack(side=tkinter.LEFT)
+
+        self.unsorted_input = tkinter.StringVar()
+        self.unsorted_entry = tkinter.Entry(
+            self.unsorted_frame,
+            textvariable=self.unsorted_input,
+            font=("Arial", 12),
+            state="disabled",
+        )
+        self.unsorted_entry.pack(side=tkinter.RIGHT)
+
+        self.unsorted_frame.pack(pady=(0, 10))
+
+        # Enter Button
+        self.error_input_button = tkinter.Button(
+            self.errors_frame,
+            text="Submit Errors",
+            font=("Arial Bold", 10),
+            command=self.submit_errors,
+            state="disabled"
+        )
+        self.error_input_button.pack(pady=(0, 10))
+
+        self.errors_frame.pack()
 
     def set_input(self, event=None):
         """Check and set the cluster numbers."""
@@ -348,6 +411,36 @@ class Window:
             self.current_cluster_label.config(text="Placing Cluster 1")
             self.current_piece_label.config(text="Placed Pieces: 0")
 
+    def submit_errors(self, event=None):
+        """Check and set the errors."""
+        # Get the input
+        missorted_input = self.missorted_input.get()
+        unsorted_input = self.unsorted_input.get()
+
+        # Parse the clusters input
+        try:
+
+            missorted = int(missorted_input)
+            unsorted = int(unsorted_input)
+
+            # Check for valid input
+            if missorted < 0 or unsorted < 0:
+                raise ValueError
+
+        except ValueError:
+            tkinter.messagebox.showwarning(
+                "Wait!", "Please enter a whole number for the errors."
+            )
+            self.missorted_input.set("")
+            self.unsorted_input.set("")
+            self.missorted_entry.focus_set()
+            return
+
+        # Send the values
+        DataMedium.num_missorted = missorted
+        DataMedium.num_unsorted = unsorted
+        self.on_closing()
+
     def start_trial(self, event=None):
         """Start a trial."""
         # Change the button
@@ -375,9 +468,15 @@ class Window:
                 self.current_cluster_label.config(text="Placing Cluster 1")
                 self.current_piece_label.config(text="Placed Pieces: 0")
 
-            # No placing clusters, close early
+            # No placing clusters, move on to errors
             else:
-                self.on_closing()
+                self.start_button.config(state="disabled", background="light gray")
+                self.stop_button.config(state="disabled", background="light gray")
+
+                self.missorted_entry.config(state="normal")
+                self.unsorted_entry.config(state="normal")
+                self.error_input_button.config(state="normal")
+                return
 
         elif WindowData.is_on_placing():
 
@@ -391,8 +490,15 @@ class Window:
                 )
                 self.current_piece_label.config(text="Placed Pieces: 0")
 
+            # Move on to errors
             else:
-                self.on_closing()
+                self.start_button.config(state="disabled", background="light gray")
+                self.stop_button.config(state="disabled", background="light gray")
+
+                self.missorted_entry.config(state="normal")
+                self.unsorted_entry.config(state="normal")
+                self.error_input_button.config(state="normal")
+                return
 
         # Change the button
         self.start_button.config(state="normal", background="green")

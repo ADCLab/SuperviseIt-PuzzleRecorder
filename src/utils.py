@@ -15,6 +15,9 @@ class DataMedium:
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
+    num_missorted: int = 0
+    num_unsorted: int = 0
+
     is_input_set: bool = False
     is_trials_complete: bool = False
     is_finished_main: bool = False

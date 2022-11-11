@@ -42,9 +42,17 @@ def main():
     with open(DataMedium.filename, "w", newline="") as file:
         writer = csv.writer(file)
 
+        # Header
         writer.writerow(row1)
         writer.writerow(row2)
+
+        # Data
         writer.writerows(data_rows)
+
+        # Errors
+        writer.writerow([])
+        writer.writerow(["Missorted", "Unsorted"])
+        writer.writerow([DataMedium.num_missorted, DataMedium.num_unsorted])
 
     DataMedium.is_finished_main = True
 
