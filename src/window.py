@@ -253,10 +253,11 @@ class Window:
     def create_button_frame(self):
         """Create the frame for trial change."""
         self.button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
+        self.button_main_frame = tkinter.Frame(self.button_frame, background=BACKGROUND_COLOR)
 
         # Trial Button
         self.start_button = tkinter.Button(
-            self.button_frame,
+            self.button_main_frame,
             text="Start Trial",
             font=("Arial Bold", 10),
             background="light gray",
@@ -270,7 +271,7 @@ class Window:
         self.start_button.pack(side=tkinter.LEFT, padx=(0, 10))
 
         self.stop_button = tkinter.Button(
-            self.button_frame,
+            self.button_main_frame,
             text="Stop Trial",
             font=("Arial Bold", 10),
             background="light gray",
@@ -281,7 +282,22 @@ class Window:
             state="disabled",
             command=self.stop_trial,
         )
-        self.stop_button.pack(side=tkinter.RIGHT, padx=(10, 0))
+        self.stop_button.pack(side=tkinter.RIGHT, padx=(10, 10))
+
+        self.button_main_frame.pack(side=tkinter.LEFT)
+
+        self.reset_button = tkinter.Button(
+            self.button_frame,
+            text="Reset Trial",
+            font=("Arial Bold", 7),
+            background="yellow",
+            activebackground="gold",
+            foreground="black",
+            width=10,
+            height=15,
+            command=self.reset_trial,
+        )
+        self.reset_button.pack(side=tkinter.RIGHT, padx=(10, 0))
 
         self.button_frame.pack(pady=(40, 0))
 
@@ -697,6 +713,23 @@ class Window:
             self.current_piece_label.config(
                 text=f"Placed Pieces: {WindowData.piece_num - 1}"
             )
+
+    def reset_trial(self, event=None):
+        """Reset the date in a trial."""
+        # Return if there is not a trial ongoing
+        if WindowData.is_in_trial is False:
+            return
+
+        # Determine if this is a sorting or placing trial
+        if WindowData.is_on_sorting():
+            DataMedium.sorting_clusters_times[WindowData.num_sorted_clusters] = []
+            self.current_piece_label.config(text="Sorted Pieces: 0")
+
+        elif WindowData.is_on_placing():
+            DataMedium.placing_clusters_times[WindowData.num_placed_clusters] = []
+            self.current_piece_label.config(text="Placed Pieces: 0")
+
+        WindowData.piece_num = 1
 
     def start(self):
         """Start the window main loop."""
