@@ -221,12 +221,12 @@ class Window:
             font=("Arial", 12),
         )
         self.cluster_order_label.pack()
-        self.cluster_order_entry.pack()
+        self.cluster_order_entry.pack(pady=(0, 10))
 
         # Asc/Desc
         self.piece_order_label = tkinter.Label(
             self.input_frame,
-            text="Piece Order",
+            text="Ascending / Descending",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
@@ -237,7 +237,7 @@ class Window:
             font=("Arial", 12),
         )
         self.piece_order_label.pack()
-        self.piece_order_entry.pack()
+        self.piece_order_entry.pack(pady=(0, 10))
 
         # Enter Button
         self.input_button = tkinter.Button(
