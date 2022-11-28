@@ -293,6 +293,8 @@ class Window:
         self.errors_input_frame.pack()
 
         # Pack the frames
+        # NOTE - This is to temporarily disable the placing errors
+        '''
         if DataMedium.is_only_sorting is False and DataMedium.is_only_placing is False:
             self.sorting_errors_frame.pack(side=tkinter.LEFT, padx=(0, 10))
             self.placing_errors_frame.pack(side=tkinter.RIGHT, padx=(10, 0))
@@ -301,6 +303,9 @@ class Window:
             self.sorting_errors_frame.pack()
         elif DataMedium.is_only_placing is True:
             self.placing_errors_frame.pack()
+        '''
+        if DataMedium.is_only_placing is False:
+            self.sorting_errors_frame.pack()
 
         # Enter Button
         self.error_input_button = tkinter.Button(
@@ -495,9 +500,12 @@ class Window:
         misplaced_input = 0
         unplaced_input = 0
 
+        # NOTE - This is to temporarily disable the placing errors
+        '''
         if DataMedium.is_only_placing is False:
             missorted_input = self.missorted_input.get()
             unsorted_input = self.unsorted_input.get()
+        '''
         if DataMedium.is_only_sorting is False:
             misplaced_input = self.misplaced_input.get()
             unplaced_input = self.unplaced_input.get()
