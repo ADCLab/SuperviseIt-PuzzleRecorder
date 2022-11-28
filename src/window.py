@@ -125,7 +125,7 @@ class Window:
         """Create and initialize the close frame."""
         self.window = tkinter.Tk()
         self.window.title("Cluster Tracking")
-        self.window.geometry("500x700")
+        self.window.geometry("500x800")
         self.window.configure(background=BACKGROUND_COLOR)
         self.window.iconphoto(
             False, tkinter.PhotoImage(file=resource_path("TheTab_KGrgb_72ppi.png"))
@@ -161,8 +161,6 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.file_label.pack()
-
         self.file_input = tkinter.StringVar()
         self.file_entry = tkinter.Entry(
             self.input_frame,
@@ -170,6 +168,7 @@ class Window:
             font=("Arial", 12),
         )
         self.file_entry.focus_set()
+        self.file_label.pack()
         self.file_entry.pack(pady=(0, 10))
 
         # Sorting
@@ -179,7 +178,6 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-
         self.sorting_input = tkinter.StringVar()
         self.sorting_entry = tkinter.Entry(
             self.input_frame,
@@ -198,7 +196,6 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-
         self.placing_input = tkinter.StringVar()
         self.placing_entry = tkinter.Entry(
             self.input_frame,
@@ -209,6 +206,38 @@ class Window:
         if DataMedium.is_only_sorting is False:
             self.placing_label.pack()
             self.placing_entry.pack(pady=(0, 10))
+
+        # Cluster Order
+        self.cluster_order_label = tkinter.Label(
+            self.input_frame,
+            text="Cluster Order:",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.cluster_order_input = tkinter.StringVar()
+        self.cluster_order_entry = tkinter.Entry(
+            self.input_frame,
+            textvariable=self.cluster_order_input,
+            font=("Arial", 12),
+        )
+        self.cluster_order_label.pack()
+        self.cluster_order_entry.pack()
+
+        # Asc/Desc
+        self.piece_order_label = tkinter.Label(
+            self.input_frame,
+            text="Piece Order",
+            font=("Arial Bold", 12),
+            background=BACKGROUND_COLOR,
+        )
+        self.piece_order_input = tkinter.StringVar()
+        self.piece_order_entry = tkinter.Entry(
+            self.input_frame,
+            textvariable=self.piece_order_input,
+            font=("Arial", 12),
+        )
+        self.piece_order_label.pack()
+        self.piece_order_entry.pack()
 
         # Enter Button
         self.input_button = tkinter.Button(
@@ -315,7 +344,10 @@ class Window:
             command=self.submit_errors,
             state="disabled"
         )
-        self.error_input_button.pack(pady=(0, 10))
+
+        # NOTE - This if statement is to temporarily disable the placing errors
+        if DataMedium.is_only_placing is False:
+            self.error_input_button.pack(pady=(0, 10))
 
         self.errors_frame.pack()
 
@@ -429,6 +461,8 @@ class Window:
         file_input = self.file_input.get()
         sorting_input = self.sorting_input.get()
         placing_input = self.placing_input.get()
+        cluster_order: str = self.cluster_order_input.get()
+        piece_order = self.piece_order_input.get()
 
         # Ensure that a file name was entered
         if len(file_input) == 0:
@@ -469,7 +503,23 @@ class Window:
             self.sorting_entry.focus_set()
             return
 
-        DataMedium.set_input(file_input, num_sorting_clusters, num_placing_clusters)
+        # Check cluster order
+        if len(cluster_order) != num_placing_clusters:
+            tkinter.messagebox.showwarning(
+                "Wait!", "Please enter a cluster order with the same number of clusters as indicated."
+            )
+            self.cluster_order_entry.focus_set()
+            return
+
+        # Check piece order
+        if len(piece_order) == 0 or piece_order.lower()[0] not in ['a', 'd']:
+            tkinter.messagebox.showwarning(
+                "Wait!", "Please enter a piece order of \"ascending\" or \"descending\"."
+            )
+            self.piece_order_entry.focus_set()
+            return
+
+        DataMedium.set_input(file_input, num_sorting_clusters, num_placing_clusters, cluster_order, piece_order)
 
         # Configure widgets as necessary
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
@@ -500,15 +550,16 @@ class Window:
         misplaced_input = 0
         unplaced_input = 0
 
-        # NOTE - This is to temporarily disable the placing errors
-        '''
         if DataMedium.is_only_placing is False:
             missorted_input = self.missorted_input.get()
             unsorted_input = self.unsorted_input.get()
+
+        # NOTE - This is to temporarily disable the placing errors
         '''
         if DataMedium.is_only_sorting is False:
             misplaced_input = self.misplaced_input.get()
             unplaced_input = self.unplaced_input.get()
+        '''
 
         # Parse the clusters input
         try:
@@ -602,9 +653,15 @@ class Window:
                 if DataMedium.is_only_placing is False:
                     self.missorted_entry.config(state="normal")
                     self.unsorted_entry.config(state="normal")
+
+                # NOTE - This is to temporarily disable the placing errors
+                '''
                 if DataMedium.is_only_sorting is False:
                     self.misplaced_entry.config(state="normal")
                     self.unplaced_entry.config(state="normal")
+                '''
+                if DataMedium.is_only_placing is True:
+                    self.close()
 
                 self.error_input_button.config(state="normal")
                 return

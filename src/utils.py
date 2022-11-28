@@ -12,6 +12,8 @@ class DataMedium:
     num_placing_clusters: int = 0
 
     filename: str
+    cluster_order: str
+    piece_order: str
     sorting_clusters_times: list[list[datetime]] = []
     placing_clusters_times: list[list[datetime]] = []
 
@@ -29,13 +31,15 @@ class DataMedium:
 
     @classmethod
     def set_input(
-        cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int
+        cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int, cluster_order: str, piece_order: str
     ):
         """Set the input values."""
         # Set the class variables
         DataMedium.filename = filename
         DataMedium.num_sorting_clusters = num_sorting_clusters
         DataMedium.num_placing_clusters = num_placing_clusters
+        DataMedium.cluster_order = cluster_order
+        DataMedium.piece_order = piece_order
         DataMedium.is_input_set = True
 
         # Initialize the times
