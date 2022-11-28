@@ -31,7 +31,12 @@ class DataMedium:
 
     @classmethod
     def set_input(
-        cls, filename: str, num_sorting_clusters: int, num_placing_clusters: int, cluster_order: str, piece_order: str
+        cls,
+        filename: str,
+        num_sorting_clusters: int,
+        num_placing_clusters: int,
+        cluster_order: str,
+        piece_order: str,
     ):
         """Set the input values."""
         # Set the class variables

@@ -43,7 +43,12 @@ def main():
         writer = csv.writer(file)
 
         # Header
-        writer.writerow([f"Cluster Order: {DataMedium.cluster_order}", f"Piece Order: {DataMedium.piece_order}"])
+        writer.writerow(
+            [
+                f"Cluster Order: {DataMedium.cluster_order}",
+                f"Piece Order: {DataMedium.piece_order}",
+            ]
+        )
         writer.writerow(row1)
         writer.writerow(row2)
 

@@ -253,7 +253,9 @@ class Window:
     def create_button_frame(self):
         """Create the frame for trial change."""
         self.button_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
-        self.button_main_frame = tkinter.Frame(self.button_frame, background=BACKGROUND_COLOR)
+        self.button_main_frame = tkinter.Frame(
+            self.button_frame, background=BACKGROUND_COLOR
+        )
 
         # Trial Button
         self.start_button = tkinter.Button(
@@ -330,7 +332,9 @@ class Window:
         self.errors_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
 
         # Create the frames
-        self.errors_input_frame = tkinter.Frame(self.errors_frame, background=BACKGROUND_COLOR)
+        self.errors_input_frame = tkinter.Frame(
+            self.errors_frame, background=BACKGROUND_COLOR
+        )
         if DataMedium.is_only_placing is False:
             self.create_sorting_errors_frame()
         if DataMedium.is_only_sorting is False:
@@ -339,7 +343,7 @@ class Window:
 
         # Pack the frames
         # NOTE - This is to temporarily disable the placing errors
-        '''
+        """
         if DataMedium.is_only_sorting is False and DataMedium.is_only_placing is False:
             self.sorting_errors_frame.pack(side=tkinter.LEFT, padx=(0, 10))
             self.placing_errors_frame.pack(side=tkinter.RIGHT, padx=(10, 0))
@@ -348,7 +352,7 @@ class Window:
             self.sorting_errors_frame.pack()
         elif DataMedium.is_only_placing is True:
             self.placing_errors_frame.pack()
-        '''
+        """
         if DataMedium.is_only_placing is False:
             self.sorting_errors_frame.pack()
 
@@ -358,7 +362,7 @@ class Window:
             text="Submit Errors",
             font=("Arial Bold", 10),
             command=self.submit_errors,
-            state="disabled"
+            state="disabled",
         )
 
         # NOTE - This if statement is to temporarily disable the placing errors
@@ -369,7 +373,9 @@ class Window:
 
     def create_sorting_errors_frame(self):
         """Create the frame for sorting errors."""
-        self.sorting_errors_frame = tkinter.Frame(self.errors_input_frame, background=BACKGROUND_COLOR)
+        self.sorting_errors_frame = tkinter.Frame(
+            self.errors_input_frame, background=BACKGROUND_COLOR
+        )
 
         # Missorted
         self.missorted_frame = tkinter.Frame(
@@ -389,7 +395,7 @@ class Window:
             textvariable=self.missorted_input,
             font=("Arial", 12),
             state="disabled",
-            width=5
+            width=5,
         )
         self.missorted_entry.pack(side=tkinter.RIGHT)
 
@@ -413,7 +419,7 @@ class Window:
             textvariable=self.unsorted_input,
             font=("Arial", 12),
             state="disabled",
-            width=5
+            width=5,
         )
         self.unsorted_entry.pack(side=tkinter.RIGHT)
 
@@ -421,7 +427,9 @@ class Window:
 
     def create_placing_errors_frame(self):
         """Create the frame for placing errors."""
-        self.placing_errors_frame = tkinter.Frame(self.errors_input_frame, background=BACKGROUND_COLOR)
+        self.placing_errors_frame = tkinter.Frame(
+            self.errors_input_frame, background=BACKGROUND_COLOR
+        )
 
         # Missorted
         self.misplaced_frame = tkinter.Frame(
@@ -441,7 +449,7 @@ class Window:
             textvariable=self.misplaced_input,
             font=("Arial", 12),
             state="disabled",
-            width=5
+            width=5,
         )
         self.misplaced_entry.pack(side=tkinter.RIGHT)
 
@@ -465,7 +473,7 @@ class Window:
             textvariable=self.unplaced_input,
             font=("Arial", 12),
             state="disabled",
-            width=5
+            width=5,
         )
         self.unplaced_entry.pack(side=tkinter.RIGHT)
 
@@ -522,20 +530,27 @@ class Window:
         # Check cluster order
         if len(cluster_order) != num_placing_clusters:
             tkinter.messagebox.showwarning(
-                "Wait!", "Please enter a cluster order with the same number of clusters as indicated."
+                "Wait!",
+                "Please enter a cluster order with the same number of clusters as indicated.",
             )
             self.cluster_order_entry.focus_set()
             return
 
         # Check piece order
-        if len(piece_order) == 0 or piece_order.lower()[0] not in ['a', 'd']:
+        if len(piece_order) == 0 or piece_order.lower()[0] not in ["a", "d"]:
             tkinter.messagebox.showwarning(
-                "Wait!", "Please enter a piece order of \"ascending\" or \"descending\"."
+                "Wait!", 'Please enter a piece order of "ascending" or "descending".'
             )
             self.piece_order_entry.focus_set()
             return
 
-        DataMedium.set_input(file_input, num_sorting_clusters, num_placing_clusters, cluster_order, piece_order)
+        DataMedium.set_input(
+            file_input,
+            num_sorting_clusters,
+            num_placing_clusters,
+            cluster_order,
+            piece_order,
+        )
 
         # Configure widgets as necessary
         self.sorting_label.config(text=f"Sorting Clusters: {num_sorting_clusters}")
@@ -571,11 +586,11 @@ class Window:
             unsorted_input = self.unsorted_input.get()
 
         # NOTE - This is to temporarily disable the placing errors
-        '''
+        """
         if DataMedium.is_only_sorting is False:
             misplaced_input = self.misplaced_input.get()
             unplaced_input = self.unplaced_input.get()
-        '''
+        """
 
         # Parse the clusters input
         try:
@@ -671,11 +686,11 @@ class Window:
                     self.unsorted_entry.config(state="normal")
 
                 # NOTE - This is to temporarily disable the placing errors
-                '''
+                """
                 if DataMedium.is_only_sorting is False:
                     self.misplaced_entry.config(state="normal")
                     self.unplaced_entry.config(state="normal")
-                '''
+                """
                 if DataMedium.is_only_placing is True:
                     self.close()
 
