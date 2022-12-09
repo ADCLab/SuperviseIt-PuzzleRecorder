@@ -229,7 +229,7 @@ class Window:
             variable=self.piece_order_result,
             value="Ascending",
             background=BACKGROUND_COLOR,
-            activebackground=BACKGROUND_COLOR
+            activebackground=BACKGROUND_COLOR,
         )
         self.piece_order_desc = tkinter.Radiobutton(
             self.input_frame,
@@ -237,7 +237,7 @@ class Window:
             variable=self.piece_order_result,
             value="Descending",
             background=BACKGROUND_COLOR,
-            activebackground=BACKGROUND_COLOR
+            activebackground=BACKGROUND_COLOR,
         )
         self.piece_order_asc.pack()
         self.piece_order_desc.pack()
