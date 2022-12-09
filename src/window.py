@@ -222,20 +222,25 @@ class Window:
         self.cluster_order_entry.pack(pady=(0, 10))
 
         # Asc/Desc
-        self.piece_order_label = tkinter.Label(
+        self.piece_order_result = tkinter.StringVar(value="Ascending")
+        self.piece_order_asc = tkinter.Radiobutton(
             self.input_frame,
-            text="Ascending / Descending",
-            font=("Arial Bold", 12),
+            text="Ascending",
+            variable=self.piece_order_result,
+            value="Ascending",
             background=BACKGROUND_COLOR,
+            activebackground=BACKGROUND_COLOR
         )
-        self.piece_order_input = tkinter.StringVar()
-        self.piece_order_entry = tkinter.Entry(
+        self.piece_order_desc = tkinter.Radiobutton(
             self.input_frame,
-            textvariable=self.piece_order_input,
-            font=("Arial", 12),
+            text="Descending",
+            variable=self.piece_order_result,
+            value="Descending",
+            background=BACKGROUND_COLOR,
+            activebackground=BACKGROUND_COLOR
         )
-        self.piece_order_label.pack()
-        self.piece_order_entry.pack(pady=(0, 10))
+        self.piece_order_asc.pack()
+        self.piece_order_desc.pack()
 
         # Enter Button
         self.input_button = tkinter.Button(
@@ -484,7 +489,7 @@ class Window:
         sorting_input = self.sorting_input.get()
         placing_input = self.placing_input.get()
         cluster_order: str = self.cluster_order_input.get()
-        piece_order = self.piece_order_input.get()
+        piece_order = self.piece_order_result.get()
 
         # Ensure that a file name was entered
         if len(file_input) == 0:
@@ -534,14 +539,6 @@ class Window:
             self.cluster_order_entry.focus_set()
             return
 
-        # Check piece order
-        if len(piece_order) == 0 or piece_order.lower()[0] not in ["a", "d"]:
-            tkinter.messagebox.showwarning(
-                "Wait!", 'Please enter a piece order of "ascending" or "descending".'
-            )
-            self.piece_order_entry.focus_set()
-            return
-
         DataMedium.set_input(
             file_input,
             num_sorting_clusters,
@@ -559,7 +556,8 @@ class Window:
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
         self.cluster_order_entry.config(state="disabled")
-        self.piece_order_entry.config(state="disabled")
+        self.piece_order_asc.config(state="disabled")
+        self.piece_order_desc.config(state="disabled")
         self.input_button.config(state="disabled")
 
         # Button
