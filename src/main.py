@@ -1,6 +1,7 @@
 """Main file."""
 
 import csv
+import webbrowser
 from datetime import datetime
 from threading import Thread
 
@@ -158,6 +159,7 @@ if __name__ == "__main__":
 
     # GUI
     window = Window()
+    webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
 
     # Keyboard
     keyboard.on_release_key("ctrl", lambda _: window.mark_date())
