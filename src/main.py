@@ -4,6 +4,8 @@ import csv
 from datetime import datetime
 from threading import Thread
 
+import keyboard
+
 from utils import DataMedium
 from window import Window
 
@@ -154,11 +156,15 @@ def set_rows(
 # Run the program
 if __name__ == "__main__":
 
+    # GUI
+    window = Window()
+
+    # Keyboard
+    keyboard.on_release_key("ctrl", lambda _: window.mark_date())
+
     # Main thread
     main_thread = Thread(target=main)
     main_thread.daemon = True
     main_thread.start()
 
-    # GUI
-    window = Window()
     window.start()

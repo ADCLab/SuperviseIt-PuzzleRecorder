@@ -131,7 +131,6 @@ class Window:
             False, tkinter.PhotoImage(file=resource_path("TheTab_KGrgb_72ppi.png"))
         )
 
-        self.window.bind("<Control_L>", self.mark_date)
         self.window.protocol("WM_DELETE_WINDOW", self.close)
 
     def create_header_frame(self):
@@ -702,7 +701,7 @@ class Window:
         self.stop_button.config(state="disabled", background="light gray")
         WindowData.is_in_trial = False
 
-    def mark_date(self, event=None):
+    def mark_date(self):
         """Mark the date in a trial."""
         # Return if there is not a trial ongoing
         if WindowData.is_in_trial is False:
