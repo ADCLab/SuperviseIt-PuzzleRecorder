@@ -559,6 +559,8 @@ class Window:
         self.file_entry.config(state="disabled")
         self.sorting_entry.config(state="disabled")
         self.placing_entry.config(state="disabled")
+        self.cluster_order_entry.config(state="disabled")
+        self.piece_order_entry.config(state="disabled")
         self.input_button.config(state="disabled")
 
         # Button
