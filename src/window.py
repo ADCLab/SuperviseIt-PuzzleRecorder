@@ -160,13 +160,12 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.file_input = tkinter.StringVar()
+        self.file_input = tkinter.StringVar(value=datetime.now().strftime("%m_%d_%Y"))
         self.file_entry = tkinter.Entry(
             self.input_frame,
             textvariable=self.file_input,
             font=("Arial", 12),
         )
-        self.file_entry.focus_set()
         self.file_label.pack()
         self.file_entry.pack(pady=(0, 10))
 
