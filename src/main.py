@@ -5,7 +5,7 @@ import webbrowser
 from datetime import datetime
 from threading import Thread
 
-import keyboard
+from pynput import keyboard
 
 from utils import DataMedium
 from window import Window
@@ -21,15 +21,7 @@ def main():
     while DataMedium.is_trials_complete is False:
         pass
 
-    # Declare clusters
-    sorting_clusters: list[list[list]] = []
     placing_clusters: list[list[list]] = []
-
-    for times in DataMedium.sorting_clusters_times:
-        cluster = list()
-        set_cluster_data(cluster, times, date_string)
-        sorting_clusters.append(cluster)
-
     for times in DataMedium.placing_clusters_times:
         cluster = list()
         set_cluster_data(cluster, times, date_string)
@@ -39,7 +31,7 @@ def main():
     row1 = []
     row2 = []
     data_rows = []
-    set_rows(row1, row2, data_rows, sorting_clusters, placing_clusters)
+    set_rows(row1, row2, data_rows, placing_clusters)
 
     # Write to the file
     with open(DataMedium.filename, "w", newline="") as file:
@@ -63,12 +55,8 @@ def main():
         error_header_row = []
         error_data_row = []
 
-        if DataMedium.is_only_placing is False:
-            error_header_row += ["Missorted", "Unsorted"]
-            error_data_row += [DataMedium.num_missorted, DataMedium.num_unsorted]
-        if DataMedium.is_only_sorting is False:
-            error_header_row += ["Misplaced", "Unplaced"]
-            error_data_row += [DataMedium.num_misplaced, DataMedium.num_unplaced]
+        error_header_row += ["Misplaced", "Unplaced"]
+        error_data_row += [DataMedium.num_misplaced, DataMedium.num_unplaced]
 
         writer.writerow(error_header_row)
         writer.writerow(error_data_row)
@@ -109,15 +97,9 @@ def set_rows(
     row1: list[str],
     row2: list[str],
     data_rows: list[list[str]],
-    sorting_clusters: list[list[list[str]]],
     placing_clusters: list[list[list[str]]],
 ):
     """Fill out the rows."""
-    # Fill out the header rows
-    for i in range(DataMedium.num_sorting_clusters):
-        row1 += [f"Sorting Cluster {i+1}", "", "", ""]
-        row2 += ["#", "Date", "Time", "Interval"]
-
     for i in range(DataMedium.num_placing_clusters):
         row1 += [f"Placing Cluster {i+1}", "", "", ""]
         row2 += ["#", "Date", "Time", "Interval"]
@@ -127,15 +109,6 @@ def set_rows(
     while True:
         data_rows.append([])
         more_rows_needed = False
-
-        # Get the data from the next row in all sorting clusters
-        for cluster in sorting_clusters:
-
-            if counter < len(cluster):
-                data_rows[counter] += cluster[counter]
-                more_rows_needed = True
-            else:
-                data_rows[counter] += ["", "", "", ""]
 
         # Get the data from the next row in all placing clusters
         for cluster in placing_clusters:
@@ -162,7 +135,13 @@ if __name__ == "__main__":
     webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
 
     # Keyboard
-    keyboard.on_release_key("ctrl", lambda _: window.mark_date())
+    def on_release(key):
+        if key == keyboard.Key.ctrl_l:
+            window.mark_date()
+
+    listener = keyboard.Listener(on_release=on_release)
+    listener.daemon = True
+    listener.start()
 
     # Main thread
     main_thread = Thread(target=main)
