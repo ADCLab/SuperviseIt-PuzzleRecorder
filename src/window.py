@@ -61,31 +61,15 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.file_input = tkinter.StringVar(value=datetime.now().strftime("%m_%d_%Y"))
+        self.file_input = tkinter.StringVar(value=DataMedium.filename)
         self.file_entry = tkinter.Entry(
             self.input_frame,
             textvariable=self.file_input,
             font=("Arial", 12),
+            state="disabled",
         )
         self.file_label.pack()
         self.file_entry.pack(pady=(0, 10))
-
-        # Placing
-        self.placing_label = tkinter.Label(
-            self.input_frame,
-            text="# of Clusters:",
-            font=("Arial Bold", 12),
-            background=BACKGROUND_COLOR,
-        )
-        self.placing_input = tkinter.StringVar()
-        self.placing_entry = tkinter.Entry(
-            self.input_frame,
-            textvariable=self.placing_input,
-            font=("Arial", 12),
-        )
-
-        self.placing_label.pack()
-        self.placing_entry.pack(pady=(0, 10))
 
         # Cluster Order
         self.cluster_order_label = tkinter.Label(
@@ -94,44 +78,17 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.cluster_order_input = tkinter.StringVar()
+        self.cluster_order_input = tkinter.StringVar(
+            value="".join(DataMedium.cluster_order)
+        )
         self.cluster_order_entry = tkinter.Entry(
             self.input_frame,
             textvariable=self.cluster_order_input,
             font=("Arial", 12),
+            state="disabled",
         )
         self.cluster_order_label.pack()
         self.cluster_order_entry.pack(pady=(0, 10))
-
-        # Asc/Desc
-        self.piece_order_result = tkinter.StringVar(value="Ascending")
-        self.piece_order_asc = tkinter.Radiobutton(
-            self.input_frame,
-            text="Ascending",
-            variable=self.piece_order_result,
-            value="Ascending",
-            background=BACKGROUND_COLOR,
-            activebackground=BACKGROUND_COLOR,
-        )
-        self.piece_order_desc = tkinter.Radiobutton(
-            self.input_frame,
-            text="Descending",
-            variable=self.piece_order_result,
-            value="Descending",
-            background=BACKGROUND_COLOR,
-            activebackground=BACKGROUND_COLOR,
-        )
-        self.piece_order_asc.pack()
-        self.piece_order_desc.pack()
-
-        # Enter Button
-        self.input_button = tkinter.Button(
-            self.input_frame,
-            text="Set Input",
-            font=("Arial Bold", 10),
-            command=self.set_input,
-        )
-        self.input_button.pack(pady=(10, 0))
 
         self.input_frame.pack()
 
@@ -147,12 +104,11 @@ class Window:
             self.button_main_frame,
             text="Start Trial",
             font=("Arial Bold", 10),
-            background="light gray",
+            background="green",
             activebackground="dark green",
             foreground="black",
             width=20,
             height=10,
-            state="disabled",
             command=self.start_trial,
         )
         self.start_button.pack(side=tkinter.LEFT, padx=(0, 10))
@@ -195,7 +151,7 @@ class Window:
         # Cluster Label
         self.current_cluster_label = tkinter.Label(
             self.progress_frame,
-            text="",
+            text=f"Current Cluster: {DataMedium.cluster_order[0]}",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
@@ -204,7 +160,7 @@ class Window:
         # Piece Label
         self.current_piece_label = tkinter.Label(
             self.progress_frame,
-            text="",
+            text="Placed Pieces: 0",
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
@@ -276,74 +232,6 @@ class Window:
         self.error_input_button.pack(pady=(0, 10))
         self.errors_frame.pack()
 
-    def set_input(self, event=None):
-        """Check and set the cluster numbers."""
-        # Get the input
-        file_input = self.file_input.get()
-        placing_input = self.placing_input.get()
-        cluster_order = self.cluster_order_input.get()
-        piece_order = self.piece_order_result.get()
-
-        # Ensure that a file name was entered
-        if len(file_input) == 0:
-            tkinter.messagebox.showwarning("Wait!", "Please provide a file name.")
-            self.file_entry.focus_set()
-            return
-
-        # Add the extension
-        if file_input.endswith(".csv") is False:
-            file_input += ".csv"
-
-        # Parse the clusters input
-        try:
-            num_placing_clusters = int(placing_input)
-
-            # Check for valid input
-            if num_placing_clusters <= 0:
-                raise ValueError
-
-        except ValueError:
-            tkinter.messagebox.showwarning(
-                "Wait!", "Please enter a whole number for the clusters."
-            )
-            self.placing_input.set("")
-            self.sorting_entry.focus_set()
-            return
-
-        # Check cluster order
-        if len(cluster_order) != num_placing_clusters:
-            tkinter.messagebox.showwarning(
-                "Wait!",
-                "Please enter a cluster order with the same number of clusters as indicated.",
-            )
-            self.cluster_order_entry.focus_set()
-            return
-
-        DataMedium.set_input(
-            file_input,
-            num_placing_clusters,
-            cluster_order,
-            piece_order,
-        )
-
-        # Configure widgets as necessary
-        self.placing_label.config(text=f"Placing Clusters: {num_placing_clusters}")
-
-        # Disable input
-        self.file_entry.config(state="disabled")
-        self.placing_entry.config(state="disabled")
-        self.cluster_order_entry.config(state="disabled")
-        self.piece_order_asc.config(state="disabled")
-        self.piece_order_desc.config(state="disabled")
-        self.input_button.config(state="disabled")
-
-        # Button
-        self.start_button.config(state="normal", background="green")
-
-        # Progress label text
-        self.current_cluster_label.config(text="Placing Cluster 1")
-        self.current_piece_label.config(text="Placed Pieces: 0")
-
     def submit_errors(self, event=None):
         """Check and set the errors."""
         # Get the input
@@ -379,20 +267,18 @@ class Window:
         # Change the button
         self.start_button.config(state="disabled", background="light gray")
         self.stop_button.config(state="normal", background="red")
+        self.current_cluster_label.config(
+            text=f"Current Cluster: {DataMedium.cluster_order[WindowData.num_placed_clusters]}"
+        )
+        self.current_piece_label.config(text="Placed Pieces: 0")
         WindowData.is_in_trial = True
 
     def stop_trial(self):
         """Stop a trial."""
         WindowData.num_placed_clusters += 1
 
-        if WindowData.num_placed_clusters < DataMedium.num_placing_clusters:
+        if WindowData.num_placed_clusters < DataMedium.num_clusters:
             WindowData.piece_num = 1
-
-            # Change the button names
-            self.current_cluster_label.config(
-                text=f"Placing Cluster {WindowData.num_placed_clusters + 1}"
-            )
-            self.current_piece_label.config(text="Placed Pieces: 0")
 
             # Change the button
             self.start_button.config(state="normal", background="green")
@@ -407,6 +293,7 @@ class Window:
             self.misplaced_entry.config(state="normal")
             self.unplaced_entry.config(state="normal")
             self.error_input_button.config(state="normal")
+            DataMedium.is_trials_complete = True
 
         WindowData.is_in_trial = False
 
@@ -418,8 +305,9 @@ class Window:
 
         WindowData.piece_num += 1
 
-        DataMedium.placing_clusters_times[WindowData.num_placed_clusters].append(
-            datetime.now()
+        DataMedium.cluster_times[WindowData.num_placed_clusters].append(datetime.now())
+        self.current_cluster_label.config(
+            text=f"Current Cluster: {DataMedium.cluster_order[WindowData.num_placed_clusters]}"
         )
         self.current_piece_label.config(
             text=f"Placed Pieces: {WindowData.piece_num - 1}"
@@ -442,10 +330,14 @@ class Window:
 
     def close(self):
         """Handle closing the window."""
-        # Check if no trials have started
-        if DataMedium.is_input_set is False:
-            self.window.quit()
-            return
+        # Check closing type
+        if DataMedium.is_trials_complete is False:
+            res = tkinter.messagebox.askquestion(
+                "Exit Program", "Do you want to save the current data?"
+            )
+            if res == "no":
+                self.window.quit()
+                return
 
         # Wait for main to finish writing to the file
         DataMedium.is_trials_complete = True

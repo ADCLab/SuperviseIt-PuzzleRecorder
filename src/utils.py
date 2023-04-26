@@ -8,59 +8,25 @@ from datetime import datetime
 class DataMedium:
     """A class to transfer data between the main program and window."""
 
-    num_placing_clusters: int = 0
-
-    filename: str
-    cluster_order: str
-    piece_order: str
-    placing_clusters_times: list[list[datetime]] = []
+    num_clusters: int = 5
+    filename: str = f"{datetime.now().strftime('%m_%d_%Y')}.csv"
+    cluster_order: list[str] = ["A", "B", "C", "D", "E"]
+    cluster_times: list[list[datetime]] = [list() for _ in range(num_clusters)]
 
     num_misplaced: int = 0
     num_unplaced: int = 0
 
-    is_input_set: bool = False
     is_trials_complete: bool = False
     is_finished_main: bool = False
-
-    @classmethod
-    def set_input(
-        cls,
-        filename: str,
-        num_placing_clusters: int,
-        cluster_order: str,
-        piece_order: str,
-    ):
-        """Set the input values."""
-        # Set the class variables
-        DataMedium.filename = filename
-        DataMedium.num_placing_clusters = num_placing_clusters
-        DataMedium.cluster_order = cluster_order
-        DataMedium.piece_order = piece_order
-        DataMedium.is_input_set = True
-
-        # Initialize the times
-        for _ in range(DataMedium.num_placing_clusters):
-            DataMedium.placing_clusters_times.append(list())
 
 
 class WindowData:
     """A class to hold data for the window."""
 
     piece_num: int = 1
-    num_sorted_clusters: int = 0
     num_placed_clusters: int = 0
 
     is_in_trial: bool = False
-
-    @classmethod
-    def is_on_sorting(cls) -> bool:
-        """Check if the trial is a sorting trial."""
-        return WindowData.num_sorted_clusters < DataMedium.num_sorting_clusters
-
-    @classmethod
-    def is_on_placing(cls) -> bool:
-        """Check if the trial is a placing trial."""
-        return WindowData.num_placed_clusters < DataMedium.num_placing_clusters
 
 
 def resource_path(relative_path: str):

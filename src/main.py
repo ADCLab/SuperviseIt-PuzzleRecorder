@@ -21,17 +21,17 @@ def main():
     while DataMedium.is_trials_complete is False:
         pass
 
-    placing_clusters: list[list[list]] = []
-    for times in DataMedium.placing_clusters_times:
+    clusters: list[list[list]] = []
+    for times in DataMedium.cluster_times:
         cluster = list()
         set_cluster_data(cluster, times, date_string)
-        placing_clusters.append(cluster)
+        clusters.append(cluster)
 
     # Create rows
     row1 = []
     row2 = []
     data_rows = []
-    set_rows(row1, row2, data_rows, placing_clusters)
+    set_rows(row1, row2, data_rows, clusters)
 
     # Write to the file
     with open(DataMedium.filename, "w", newline="") as file:
@@ -40,8 +40,7 @@ def main():
         # Header
         writer.writerow(
             [
-                f"Cluster Order: {DataMedium.cluster_order}",
-                f"Piece Order: {DataMedium.piece_order}",
+                f"Cluster Order: {''.join(DataMedium.cluster_order)}",
             ]
         )
         writer.writerow(row1)
@@ -51,13 +50,10 @@ def main():
         writer.writerows(data_rows)
 
         # Errors
+        error_header_row = ["Misplaced", "Unplaced"]
+        error_data_row = [DataMedium.num_misplaced, DataMedium.num_unplaced]
+
         writer.writerow([])
-        error_header_row = []
-        error_data_row = []
-
-        error_header_row += ["Misplaced", "Unplaced"]
-        error_data_row += [DataMedium.num_misplaced, DataMedium.num_unplaced]
-
         writer.writerow(error_header_row)
         writer.writerow(error_data_row)
 
@@ -100,8 +96,8 @@ def set_rows(
     placing_clusters: list[list[list[str]]],
 ):
     """Fill out the rows."""
-    for i in range(DataMedium.num_placing_clusters):
-        row1 += [f"Placing Cluster {i+1}", "", "", ""]
+    for i in range(DataMedium.num_clusters):
+        row1 += [f"Cluster {DataMedium.cluster_order[i]}", "", "", ""]
         row2 += ["#", "Date", "Time", "Interval"]
 
     # Fill out the data rows
