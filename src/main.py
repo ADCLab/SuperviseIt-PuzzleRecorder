@@ -1,17 +1,20 @@
 """Main file."""
 
 import csv
+import random
+import uuid
 import webbrowser
 from datetime import datetime
 from threading import Thread
 
+import gspread
 from pynput import keyboard
 
 from utils import DataMedium
 from window import Window
 
 
-def main():
+def main(participantId: str):
     """Run the program."""
     # Get the current date for entry
     current_date = datetime.now()
@@ -56,6 +59,16 @@ def main():
         writer.writerow([])
         writer.writerow(error_header_row)
         writer.writerow(error_data_row)
+
+    gc = gspread.service_account(filename="sheetsCredentials.json")
+
+    # Open a sheet from a spreadsheet in one go
+    wks = gc.open("FOW Puzzle Task Errors").sheet1
+
+    for cluster in DataMedium.cluster_order:
+        wks.append_row(
+            [f"{current_date.strftime('%B%d')} {participantId} c{cluster}", 0, 0, 0]
+        )
 
     DataMedium.is_finished_main = True
 
@@ -126,6 +139,27 @@ def set_rows(
 # Run the program
 if __name__ == "__main__":
 
+    with open("participants.txt", "r+") as file:
+
+        # Get the current and new participants
+        participantsSet = set([line.strip() for line in file.readlines()])
+
+        while (participantId := (uuid.uuid4().hex[:10])) in participantsSet:
+            pass
+
+        file.write(f"{participantId}\n")
+
+        # Get the first letter of the order
+        firstLetter = chr(65 + len(participantsSet) % 5)
+        allLetters = ["A", "B", "C", "D", "E"]
+        allLetters.remove(firstLetter)
+
+        # Set the fields
+        DataMedium.filename = f"{participantId}.csv"
+        DataMedium.cluster_order: list[str] = [firstLetter] + random.sample(
+            allLetters, 4
+        )
+
     # GUI
     window = Window()
     webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
@@ -140,7 +174,7 @@ if __name__ == "__main__":
     listener.start()
 
     # Main thread
-    main_thread = Thread(target=main)
+    main_thread = Thread(target=main, args=(participantId,))
     main_thread.daemon = True
     main_thread.start()
 
