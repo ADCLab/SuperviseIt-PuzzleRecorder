@@ -52,22 +52,13 @@ def main(participantId: str):
         # Data
         writer.writerows(data_rows)
 
-        # Errors
-        error_header_row = ["Misplaced", "Unplaced"]
-        error_data_row = [DataMedium.num_misplaced, DataMedium.num_unplaced]
-
-        writer.writerow([])
-        writer.writerow(error_header_row)
-        writer.writerow(error_data_row)
-
+    # Google Sheets
     gc = gspread.service_account(filename="sheetsCredentials.json")
-
-    # Open a sheet from a spreadsheet in one go
     wks = gc.open("FOW Puzzle Task Errors").sheet1
 
     for cluster in DataMedium.cluster_order:
         wks.append_row(
-            [f"{current_date.strftime('%B%d')} {participantId} c{cluster}", 0, 0, 0]
+            [f"{current_date.strftime('%B%d')} {participantId} {cluster}", 0, 0, 0]
         )
 
     DataMedium.is_finished_main = True
