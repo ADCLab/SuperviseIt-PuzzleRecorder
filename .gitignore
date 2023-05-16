@@ -166,3 +166,7 @@ participants.txt
 
 # Secrets
 sheetsCredentials.json
+
+# Camera
+*.bag
+*.png
