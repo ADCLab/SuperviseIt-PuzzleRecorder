@@ -69,7 +69,6 @@ def set_cluster_data(cluster: list[list[str]], times: list[datetime], date_strin
     start_time = None
     piece_num = 1
     for current_time in times:
-
         # Insert a Piece line
         if start_time:
             interval = current_time - start_time
@@ -112,7 +111,6 @@ def set_rows(
 
         # Get the data from the next row in all placing clusters
         for cluster in placing_clusters:
-
             if counter < len(cluster):
                 data_rows[counter] += cluster[counter]
                 more_rows_needed = True
@@ -129,9 +127,7 @@ def set_rows(
 
 # Run the program
 if __name__ == "__main__":
-
     with open("participants.txt", "r+") as file:
-
         # Get the current and new participants
         participantsSet = set([line.strip() for line in file.readlines()])
 
@@ -157,6 +153,7 @@ if __name__ == "__main__":
 
     # Keyboard
     def on_release(key):
+        """Mark date on keyboard ctrl_l release."""
         if key == keyboard.Key.ctrl_l:
             window.mark_date()
 

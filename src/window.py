@@ -240,7 +240,6 @@ class Window:
 
         # Parse the clusters input
         try:
-
             misplaced = int(misplaced_input)
             unplaced = int(unplaced_input)
 
