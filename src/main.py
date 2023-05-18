@@ -161,7 +161,7 @@ if __name__ == "__main__":
         pipeline = rs.pipeline()
         config = rs.config()
         config.enable_stream(rs.stream.color, 640, 480, rs.format.rgb8, 30)
-        config.enable_record_to_file("test.bag")
+        config.enable_record_to_file("full_recording.bag")
 
         # Set up alignment
         align_to = rs.stream.color
