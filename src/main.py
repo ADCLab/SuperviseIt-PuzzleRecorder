@@ -157,6 +157,13 @@ if __name__ == "__main__":
 
     # Camera
     try:
+
+        # Reset camera in case it is occupied
+        ctx = rs.context()
+        for device in ctx.query_devices():
+            device.hardware_reset()
+        time.sleep(1)
+
         # Set up pipeline
         pipeline = rs.pipeline()
         config = rs.config()
@@ -180,8 +187,6 @@ if __name__ == "__main__":
             im = Image.fromarray(color_image)
             im.save(f"{name}.png")
 
-        # Sleep to wait for camera to warm up before taking snapshot
-        time.sleep(1)
         save_snapshot("Snapshot0")
 
         window.save_snapshot = save_snapshot
