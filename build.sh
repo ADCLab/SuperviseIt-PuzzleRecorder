@@ -7,4 +7,4 @@ if [[ ! -f sheetsCredentials.json ]]; then
 fi
 
 # Generate executable
-pyinstaller -F -w --clean -n "Cluster Tracking" -i "TheTab_KGrgb_72ppi.ico" --add-data "TheTab_KGrgb_72ppi.png:." src/main.py
+pyinstaller -F -w --clean -n "Cluster Tracking" --add-data "TheTab_KGrgb_72ppi.png:." src/main.py
