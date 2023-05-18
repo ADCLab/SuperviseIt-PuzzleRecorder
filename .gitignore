@@ -170,3 +170,4 @@ sheetsCredentials.json
 # Camera
 *.bag
 *.png
+!*/TheTab_KGrgb_72ppi.png
