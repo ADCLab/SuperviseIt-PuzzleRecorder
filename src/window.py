@@ -20,7 +20,6 @@ class Window:
         self.create_input_frame()
         self.create_button_frame()
         self.create_progress_frame()
-        self.create_errors_frame()
 
     def create_window(self):
         """Create and initialize the close frame."""
@@ -168,99 +167,6 @@ class Window:
 
         self.progress_frame.pack(pady=(0, 10))
 
-    def create_errors_frame(self):
-        """Create the frame for errors."""
-        self.errors_frame = tkinter.Frame(self.window, background=BACKGROUND_COLOR)
-
-        # Misplaced
-        self.misplaced_frame = tkinter.Frame(
-            self.errors_frame, background=BACKGROUND_COLOR
-        )
-        self.misplaced_label = tkinter.Label(
-            self.misplaced_frame,
-            text="Misplaced:",
-            font=("Arial Bold", 12),
-            background=BACKGROUND_COLOR,
-        )
-        self.misplaced_label.pack(side=tkinter.LEFT)
-
-        self.misplaced_input = tkinter.StringVar(value="0")
-        self.misplaced_entry = tkinter.Entry(
-            self.misplaced_frame,
-            textvariable=self.misplaced_input,
-            font=("Arial", 12),
-            state="disabled",
-            width=5,
-        )
-        self.misplaced_entry.pack(side=tkinter.RIGHT)
-
-        self.misplaced_frame.pack(pady=(0, 10))
-
-        # Unplaced
-        self.unplaced_frame = tkinter.Frame(
-            self.errors_frame, background=BACKGROUND_COLOR
-        )
-        self.unplaced_label = tkinter.Label(
-            self.unplaced_frame,
-            text="Unplaced:",
-            font=("Arial Bold", 12),
-            background=BACKGROUND_COLOR,
-        )
-        self.unplaced_label.pack(side=tkinter.LEFT)
-
-        self.unplaced_input = tkinter.StringVar(value="0")
-        self.unplaced_entry = tkinter.Entry(
-            self.unplaced_frame,
-            textvariable=self.unplaced_input,
-            font=("Arial", 12),
-            state="disabled",
-            width=5,
-        )
-        self.unplaced_entry.pack(side=tkinter.RIGHT)
-
-        self.unplaced_frame.pack(pady=(0, 10))
-
-        # Enter Button
-        self.error_input_button = tkinter.Button(
-            self.errors_frame,
-            text="Submit Errors",
-            font=("Arial Bold", 10),
-            command=self.submit_errors,
-            state="disabled",
-        )
-
-        self.error_input_button.pack(pady=(0, 10))
-        self.errors_frame.pack()
-
-    def submit_errors(self, event=None):
-        """Check and set the errors."""
-        # Get the input
-        misplaced_input = self.misplaced_input.get()
-        unplaced_input = self.unplaced_input.get()
-
-        # Parse the clusters input
-        try:
-            misplaced = int(misplaced_input)
-            unplaced = int(unplaced_input)
-
-            # Check for valid input
-            if misplaced < 0 or unplaced < 0:
-                raise ValueError
-
-        except ValueError:
-            tkinter.messagebox.showwarning(
-                "Wait!", "Please enter a whole number for the errors."
-            )
-            self.misplaced_input.set("")
-            self.unplaced_input.set("")
-            self.misplaced_entry.focus_set()
-            return
-
-        # Send the values
-        DataMedium.num_misplaced = misplaced
-        DataMedium.num_unplaced = unplaced
-        self.close()
-
     def start_trial(self, event=None):
         """Start a trial."""
         # Change the button
@@ -274,6 +180,7 @@ class Window:
 
     def stop_trial(self):
         """Stop a trial."""
+        # Change cluster
         WindowData.num_placed_clusters += 1
 
         if WindowData.num_placed_clusters < DataMedium.num_clusters:
@@ -288,13 +195,13 @@ class Window:
             self.start_button.config(state="disabled", background="light gray")
             self.stop_button.config(state="disabled", background="light gray")
 
-            # self.close()
-            self.misplaced_entry.config(state="normal")
-            self.unplaced_entry.config(state="normal")
-            self.error_input_button.config(state="normal")
             DataMedium.is_trials_complete = True
+            self.close()
 
         WindowData.is_in_trial = False
+
+        # Save snapshot
+        self.save_snapshot(f"Snapshot{WindowData.num_placed_clusters}")
 
     def mark_date(self):
         """Mark the date in a trial."""
@@ -339,7 +246,6 @@ class Window:
                 return
 
         # Wait for main to finish writing to the file
-        DataMedium.is_trials_complete = True
         while DataMedium.is_finished_main is False:
             pass
 

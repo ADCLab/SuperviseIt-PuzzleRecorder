@@ -2,12 +2,16 @@
 
 import csv
 import random
+import time
 import uuid
 import webbrowser
 from datetime import datetime
 from threading import Thread
 
 import gspread
+import numpy as np
+import pyrealsense2 as rs
+from PIL import Image
 from pynput import keyboard
 
 from utils import DataMedium
@@ -127,7 +131,7 @@ def set_rows(
 
 # Run the program
 if __name__ == "__main__":
-    with open("participants.txt", "r+") as file:
+    with open("participants.txt", "a+") as file:
         # Get the current and new participants
         participantsSet = set([line.strip() for line in file.readlines()])
 
@@ -151,6 +155,41 @@ if __name__ == "__main__":
     window = Window()
     webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
 
+    # Camera
+    try:
+        # Set up pipeline
+        pipeline = rs.pipeline()
+        config = rs.config()
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.rgb8, 30)
+        config.enable_record_to_file("test.bag")
+
+        # Set up alignment
+        align_to = rs.stream.color
+        align = rs.align(align_to)
+
+        # Start pipeline
+        pipeline.start(config)
+
+        def save_snapshot(name: str):
+            """Save a picture from the camera."""
+            frames = pipeline.wait_for_frames()
+            aligned_frames = align.process(frames)
+            color_frame = aligned_frames.get_color_frame()
+
+            color_image = np.asanyarray(color_frame.get_data())
+            im = Image.fromarray(color_image)
+            im.save(f"{name}.png")
+
+        # Sleep to wait for camera to warm up before taking snapshot
+        time.sleep(1)
+        save_snapshot("Snapshot0")
+
+        window.save_snapshot = save_snapshot
+
+    except Exception as e:
+        print(e)
+        exit(1)
+
     # Keyboard
     def on_release(key):
         """Mark date on keyboard ctrl_l release."""
@@ -167,3 +206,7 @@ if __name__ == "__main__":
     main_thread.start()
 
     window.start()
+
+    # Stop camera
+    del config  # Will not work without this line
+    pipeline.stop()
