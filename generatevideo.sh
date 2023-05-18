@@ -1,8 +1,8 @@
 #!/bin/bash
 
-mkdir frames
-rs-convert -i test.bag -p frames/
+TMPDIR=$(mktemp -d)
 
-ffmpeg -r 30 -pattern_type glob -i 'frames/*.png' video.mp4
+rs-convert -i test.bag -p $TMPDIR/ -c
+ffmpeg -r 30 -pattern_type glob -i "${TMPDIR}/*.png" video.mp4
 
-rm -rf frames
+rm -rf $TMPDIR
