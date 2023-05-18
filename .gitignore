@@ -171,3 +171,4 @@ sheetsCredentials.json
 *.bag
 *.png
 !*/TheTab_KGrgb_72ppi.png
+*.mp4
