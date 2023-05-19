@@ -5,6 +5,7 @@ REMOVE_CSV=false
 REMOVE_LOG=false
 REMOVE_MP4=false
 REMOVE_PNG=false
+REMOVE_VENV=false
 
 while [[ $1 != "" ]]; do
 
@@ -65,6 +66,9 @@ while [[ $1 != "" ]]; do
             ;;
         -p | --png)
             REMOVE_PNG=true
+            ;;
+        --venv)
+            rm -rf ./.venv/
             ;;
     esac
     shift
