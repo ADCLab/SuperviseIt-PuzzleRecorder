@@ -21,7 +21,7 @@ pip install --upgrade -r requirements.txt
 TMPDIR_DIST=$(mktemp -d)
 TMPDIR_BUILD=$(mktemp -d)
 
-pyinstaller -F -w --clean --name "${PROGRAM_NAME}" --add-data "src/TheTab_KGrgb_72ppi.png:." src/main.py --distpath "${TMPDIR_DIST}" --workpath "${TMPDIR_BUILD}"
+pyinstaller -F -w --clean --name "${PROGRAM_NAME}" --add-data "src/TheTab_KGrgb_72ppi.png:./src" src/main.py --distpath "${TMPDIR_DIST}" --workpath "${TMPDIR_BUILD}"
 mv "${TMPDIR_DIST}/${PROGRAM_NAME}" "."
 
 rm -rf $TMPDIR_DIST $TMPDIR_BUILD
