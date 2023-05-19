@@ -187,6 +187,7 @@ if __name__ == "__main__":
             im = Image.fromarray(color_image)
             im.save(f"{participantId}_{identifier}.png")
 
+        time.sleep(1)
         save_snapshot(0)
 
         window.save_snapshot = save_snapshot
