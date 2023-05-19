@@ -32,7 +32,7 @@ class WindowData:
 def resource_path(relative_path: str):
     """Get absolute path to resource."""
     try:
-        base_path = sys._MEIPASS  # type: ignore
+        base_path = sys._MEIPASS
     except Exception:
         base_path = os.path.abspath(".")
 
