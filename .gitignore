@@ -163,6 +163,7 @@ cython_debug/
 *.csv
 devtest.py
 participants.txt
+Cluster_Tracking
 
 # Secrets
 sheetsCredentials.json

@@ -1,10 +1,27 @@
 #!/bin/bash
 
+PROGRAM_NAME="Cluster_Tracking"
+
 # Check for the google sheets credentials json file
 if [[ ! -f sheetsCredentials.json ]]; then
     echo sheetsCredentials.json not found.
     exit 1
 fi
 
-# Generate executable
-pyinstaller -F -w --clean -n "Cluster Tracking" --add-data "TheTab_KGrgb_72ppi.png:." src/main.py
+# Set up the virtual environment
+if [[ ! -d ./.venv/ ]]; then
+    python -m venv .venv
+fi
+
+source ./.venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Generate the executable
+TMPDIR_DIST=$(mktemp -d)
+TMPDIR_BUILD=$(mktemp -d)
+
+pyinstaller -F -w --clean --name "${PROGRAM_NAME}" --add-data "TheTab_KGrgb_72ppi.png:." src/main.py --distpath "${TMPDIR_DIST}" --workpath "${TMPDIR_BUILD}"
+mv "${TMPDIR_DIST}/${PROGRAM_NAME}" "."
+
+rm -rf $TMPDIR_DIST $TMPDIR_BUILD
