@@ -168,7 +168,7 @@ if __name__ == "__main__":
         pipeline = rs.pipeline()
         config = rs.config()
         config.enable_stream(rs.stream.color, 640, 480, rs.format.rgb8, 30)
-        config.enable_record_to_file("full_recording.bag")
+        config.enable_record_to_file(f"{participantId}.bag")
 
         # Set up alignment
         align_to = rs.stream.color
@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
             color_image = np.asanyarray(color_frame.get_data())
             im = Image.fromarray(color_image)
-            im.save(f"TrialSnapshot_{participantId}_{identifier}.png")
+            im.save(f"{participantId}_{identifier}.png")
 
         save_snapshot(0)
 
