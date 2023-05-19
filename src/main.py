@@ -177,7 +177,7 @@ if __name__ == "__main__":
         # Start pipeline
         pipeline.start(config)
 
-        def save_snapshot(name: str):
+        def save_snapshot(identifier: str):
             """Save a picture from the camera."""
             frames = pipeline.wait_for_frames()
             aligned_frames = align.process(frames)
@@ -185,9 +185,9 @@ if __name__ == "__main__":
 
             color_image = np.asanyarray(color_frame.get_data())
             im = Image.fromarray(color_image)
-            im.save(f"{name}.png")
+            im.save(f"TrialSnapshot_{participantId}_{identifier}.png")
 
-        save_snapshot("Snapshot0")
+        save_snapshot(0)
 
         window.save_snapshot = save_snapshot
 

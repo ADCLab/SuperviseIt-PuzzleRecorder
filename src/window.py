@@ -180,6 +180,9 @@ class Window:
 
     def stop_trial(self):
         """Stop a trial."""
+        # Save snapshot
+        self.save_snapshot(DataMedium.cluster_order[WindowData.num_placed_clusters])
+
         # Change cluster
         WindowData.num_placed_clusters += 1
 
@@ -199,9 +202,6 @@ class Window:
             self.close()
 
         WindowData.is_in_trial = False
-
-        # Save snapshot
-        self.save_snapshot(f"Snapshot{WindowData.num_placed_clusters}")
 
     def mark_date(self):
         """Mark the date in a trial."""
