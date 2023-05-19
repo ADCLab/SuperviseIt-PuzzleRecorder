@@ -15,7 +15,7 @@ fi
 
 source ./.venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 
 # Generate the executable
 TMPDIR_DIST=$(mktemp -d)
