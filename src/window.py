@@ -28,7 +28,7 @@ class Window:
         self.window.geometry("600x900")
         self.window.configure(background=BACKGROUND_COLOR)
         self.window.iconphoto(
-            False, tkinter.PhotoImage(file=resource_path("TheTab_KGrgb_72ppi.png"))
+            False, tkinter.PhotoImage(file=resource_path("src/TheTab_KGrgb_72ppi.png"))
         )
 
         self.window.protocol("WM_DELETE_WINDOW", self.close)
