@@ -225,7 +225,7 @@ class Window:
         if WindowData.is_in_trial is False:
             return
 
-        DataMedium.placing_clusters_times[WindowData.num_placed_clusters] = []
+        DataMedium.cluster_times[WindowData.num_placed_clusters] = []
         self.current_piece_label.config(text="Placed Pieces: 0")
 
         WindowData.piece_num = 1
