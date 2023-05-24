@@ -4,7 +4,6 @@ import csv
 import random
 import time
 import uuid
-import webbrowser
 from datetime import datetime
 from threading import Thread
 
@@ -131,7 +130,7 @@ def set_rows(
 
 # Run the program
 if __name__ == "__main__":
-    with open("participants.txt", "a+") as file:
+    with open("participants.txt", "r+") as file:
         # Get the current and new participants
         participantsSet = set([line.strip() for line in file.readlines()])
 
@@ -153,16 +152,18 @@ if __name__ == "__main__":
 
     # GUI
     window = Window()
-    webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
 
     # Camera
     try:
-
         # Reset camera in case it is occupied
+        """
+        NOTE breaks on lab computer. Meant to reset camera if it incorrectly thinks it is streaming
+
         ctx = rs.context()
         for device in ctx.query_devices():
             device.hardware_reset()
         time.sleep(1)
+        """
 
         # Set up pipeline
         pipeline = rs.pipeline()
