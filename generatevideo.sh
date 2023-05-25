@@ -1,13 +1,20 @@
 #!/bin/bash
 
-if [[ $1 == "" ]]; then
-    echo Please provide bag file
-    exit 1
-fi
+for file in $(ls *.bag); do
 
-TMPDIR=$(mktemp -d)
+    # Get id
+    participantId="$(basename -s .bag $file)"
+    
+    # Convert if no cooresponding mp4
+    if [[ ! -f "${participantId}.mp4" ]]; then
+        echo "Converting ${file}"
 
-rs-convert -i $1 -p $TMPDIR/ -c
-ffmpeg -r 30 -pattern_type glob -i "${TMPDIR}/*.png" $(basename -s .bag "$1").mp4
+        TMPDIR=$(mktemp -d)
 
-rm -rf $TMPDIR
+        rs-convert -c -i "$file" -p $TMPDIR/
+        ffmpeg -loglevel quiet -r 30 -pattern_type glob -i "${TMPDIR}/*.png" "${participantId}.mp4"
+
+        rm -rf $TMPDIR
+    fi
+done
+
