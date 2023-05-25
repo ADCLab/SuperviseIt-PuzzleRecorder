@@ -20,15 +20,6 @@ class DataMedium:
     is_finished_main: bool = False
 
 
-class WindowData:
-    """A class to hold data for the window."""
-
-    piece_num: int = 0
-    num_placed_clusters: int = 0
-
-    is_in_trial: bool = False
-
-
 def resource_path(relative_path: str):
     """Get absolute path to resource."""
     try:

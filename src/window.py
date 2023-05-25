@@ -4,13 +4,17 @@ import tkinter
 import tkinter.messagebox
 from datetime import datetime
 
-from utils import DataMedium, WindowData, resource_path
+from utils import DataMedium, resource_path
 
 BACKGROUND_COLOR = "gray"
 
 
 class Window:
     """The GUI Window."""
+
+    piece_num: int = 0
+    num_placed_clusters: int = 0
+    is_in_trial: bool = False
 
     def __init__(self):
         """Initialize the window."""
@@ -190,21 +194,21 @@ class Window:
         self.start_button.config(state="disabled", background="light gray")
         self.stop_button.config(state="normal", background="red")
         self.current_cluster_label.config(
-            text=f"Current Cluster: {DataMedium.cluster_order[WindowData.num_placed_clusters]}"
+            text=f"Current Cluster: {DataMedium.cluster_order[Window.num_placed_clusters]}"
         )
         self.current_piece_label.config(text="Placed Pieces: 0")
-        WindowData.is_in_trial = True
+        Window.is_in_trial = True
 
     def stop_trial(self):
         """Stop a trial."""
         # Save snapshot
-        self.save_snapshot(DataMedium.cluster_order[WindowData.num_placed_clusters])
+        self.save_snapshot(DataMedium.cluster_order[Window.num_placed_clusters])
 
         # Change cluster
-        WindowData.num_placed_clusters += 1
+        Window.num_placed_clusters += 1
 
-        if WindowData.num_placed_clusters < DataMedium.num_clusters:
-            WindowData.piece_num = 0
+        if Window.num_placed_clusters < DataMedium.num_clusters:
+            Window.piece_num = 0
 
             # Change the button
             self.start_button.config(state="normal", background="green")
@@ -218,38 +222,38 @@ class Window:
             DataMedium.is_trials_complete = True
             self.close()
 
-        WindowData.is_in_trial = False
+        Window.is_in_trial = False
 
     def mark_date(self):
         """Mark the date in a trial."""
         # Return if there is not a trial ongoing
-        if WindowData.is_in_trial is False:
+        if Window.is_in_trial is False:
             return
 
-        DataMedium.cluster_times[WindowData.num_placed_clusters].append(datetime.now())
+        DataMedium.cluster_times[Window.num_placed_clusters].append(datetime.now())
         self.current_cluster_label.config(
-            text=f"Current Cluster: {DataMedium.cluster_order[WindowData.num_placed_clusters]}"
+            text=f"Current Cluster: {DataMedium.cluster_order[Window.num_placed_clusters]}"
         )
 
-        if WindowData.piece_num == 0:
+        if Window.piece_num == 0:
             text = "Placed Pieces: Initialized"
         else:
-            text = f"Placed Pieces: {WindowData.piece_num}"
+            text = f"Placed Pieces: {Window.piece_num}"
 
         self.current_piece_label.config(text=text)
 
-        WindowData.piece_num += 1
+        Window.piece_num += 1
 
     def reset_trial(self, event=None):
         """Reset the date in a trial."""
         # Return if there is not a trial ongoing
-        if WindowData.is_in_trial is False:
+        if Window.is_in_trial is False:
             return
 
-        DataMedium.cluster_times[WindowData.num_placed_clusters] = []
+        DataMedium.cluster_times[Window.num_placed_clusters] = []
         self.current_piece_label.config(text="Placed Pieces: 0")
 
-        WindowData.piece_num = 0
+        Window.piece_num = 0
 
     def start(self):
         """Start the window main loop."""
