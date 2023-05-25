@@ -4,6 +4,7 @@ import csv
 import random
 import time
 import uuid
+import webbrowser
 from datetime import datetime
 from threading import Thread
 
@@ -152,6 +153,7 @@ if __name__ == "__main__":
 
     # GUI
     window = Window()
+    webbrowser.open("https://ucf.qualtrics.com/jfe/form/SV_a4CaLHGsRyrG5fw", new=1)
 
     # Camera
     try:
