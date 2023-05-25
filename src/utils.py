@@ -9,7 +9,7 @@ class DataMedium:
     """A class to transfer data between the main program and window."""
 
     num_clusters: int = 5
-    filename: str = f"{datetime.now().strftime('%m_%d_%Y')}.csv"
+    participantId: str = ""
     cluster_order: list[str] = ["A", "B", "C", "D", "E"]
     cluster_times: list[list[datetime]] = [list() for _ in range(num_clusters)]
 

@@ -146,7 +146,7 @@ if __name__ == "__main__":
         allLetters.remove(firstLetter)
 
         # Set the fields
-        DataMedium.filename = f"{participantId}.csv"
+        DataMedium.participantId = participantId
         DataMedium.cluster_order: list[str] = [firstLetter] + random.sample(
             allLetters, 4
         )

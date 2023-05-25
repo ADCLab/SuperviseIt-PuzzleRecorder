@@ -60,7 +60,7 @@ class Window:
             font=("Arial Bold", 12),
             background=BACKGROUND_COLOR,
         )
-        self.file_input = tkinter.StringVar(value=DataMedium.filename)
+        self.file_input = tkinter.StringVar(value=f"{DataMedium.participantId}.csv")
         self.file_entry = tkinter.Entry(
             self.input_frame,
             textvariable=self.file_input,
@@ -88,6 +88,23 @@ class Window:
         )
         self.cluster_order_label.pack()
         self.cluster_order_entry.pack(pady=(0, 10))
+
+        # Copy id button
+        def copy_id():
+            self.window.clipboard_clear()
+            self.window.clipboard_append(DataMedium.participantId)
+
+        self.copyid_button = tkinter.Button(
+            self.input_frame,
+            text="Copy ID to Clipboard",
+            font=("Arial Bold", 10),
+            background="light gray",
+            activebackground="dark gray",
+            width=20,
+            height=3,
+            command=copy_id
+        )
+        self.copyid_button.pack(pady=(20, 10))
 
         self.input_frame.pack()
 
