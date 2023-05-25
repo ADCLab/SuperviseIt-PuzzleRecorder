@@ -23,7 +23,7 @@ class DataMedium:
 class WindowData:
     """A class to hold data for the window."""
 
-    piece_num: int = 1
+    piece_num: int = 0
     num_placed_clusters: int = 0
 
     is_in_trial: bool = False

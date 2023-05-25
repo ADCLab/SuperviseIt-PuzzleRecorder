@@ -102,7 +102,7 @@ class Window:
             activebackground="dark gray",
             width=20,
             height=3,
-            command=copy_id
+            command=copy_id,
         )
         self.copyid_button.pack(pady=(20, 10))
 
@@ -204,7 +204,7 @@ class Window:
         WindowData.num_placed_clusters += 1
 
         if WindowData.num_placed_clusters < DataMedium.num_clusters:
-            WindowData.piece_num = 1
+            WindowData.piece_num = 0
 
             # Change the button
             self.start_button.config(state="normal", background="green")
@@ -226,15 +226,19 @@ class Window:
         if WindowData.is_in_trial is False:
             return
 
-        WindowData.piece_num += 1
-
         DataMedium.cluster_times[WindowData.num_placed_clusters].append(datetime.now())
         self.current_cluster_label.config(
             text=f"Current Cluster: {DataMedium.cluster_order[WindowData.num_placed_clusters]}"
         )
-        self.current_piece_label.config(
-            text=f"Placed Pieces: {WindowData.piece_num - 1}"
-        )
+
+        if WindowData.piece_num == 0:
+            text = "Placed Pieces: Initialized"
+        else:
+            text = f"Placed Pieces: {WindowData.piece_num}"
+
+        self.current_piece_label.config(text=text)
+
+        WindowData.piece_num += 1
 
     def reset_trial(self, event=None):
         """Reset the date in a trial."""
@@ -245,7 +249,7 @@ class Window:
         DataMedium.cluster_times[WindowData.num_placed_clusters] = []
         self.current_piece_label.config(text="Placed Pieces: 0")
 
-        WindowData.piece_num = 1
+        WindowData.piece_num = 0
 
     def start(self):
         """Start the window main loop."""
