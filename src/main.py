@@ -41,7 +41,7 @@ def main(participantId: str):
     set_rows(row1, row2, data_rows, clusters)
 
     # Write to the file
-    with open(DataMedium.filename, "w", newline="") as file:
+    with open(f"{DataMedium.participantId}.csv", "w", newline="") as file:
         writer = csv.writer(file)
 
         # Header

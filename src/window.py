@@ -255,12 +255,16 @@ class Window:
         """Handle closing the window."""
         # Check closing type
         if DataMedium.is_trials_complete is False:
-            res = tkinter.messagebox.askquestion(
+            res = tkinter.messagebox.askyesnocancel(
                 "Exit Program", "Do you want to save the current data?"
             )
-            if res == "no":
+            if res is None:
+                return
+            elif res is False:
                 self.window.quit()
                 return
+            else:
+                DataMedium.is_trials_complete = True
 
         # Wait for main to finish writing to the file
         while DataMedium.is_finished_main is False:
