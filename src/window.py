@@ -172,7 +172,7 @@ class Window:
         self.current_cluster_label = tkinter.Label(
             self.progress_frame,
             text=f"Current Cluster: {DataMedium.cluster_order[0]}",
-            font=("Arial Bold", 12),
+            font=("Arial Bold", 24), # changed from 12 to 24 for readability
             background=BACKGROUND_COLOR,
         )
         self.current_cluster_label.pack(pady=(10, 0))
@@ -190,23 +190,32 @@ class Window:
 
     def start_trial(self, event=None):
         """Start a trial."""
+
+        if Window.num_placed_clusters == 0:
+            #start_camera() #start pipeline in main
+            # DataMedium.pipeline.start(DataMedium.config)
+            DataMedium.start_camera()
+            DataMedium.save_snapshot(0)
+            
+           
+
         # Change the button
         self.start_button.config(state="disabled", background="light gray")
         self.stop_button.config(state="normal", background="red")
-        self.current_cluster_label.config(
-            text=f"Current Cluster: {DataMedium.cluster_order[Window.num_placed_clusters]}"
-        )
         self.current_piece_label.config(text="Placed Pieces: 0")
         Window.is_in_trial = True
 
     def stop_trial(self):
         """Stop a trial."""
         # Save snapshot
-        self.save_snapshot(DataMedium.cluster_order[Window.num_placed_clusters])
+        DataMedium.save_snapshot(DataMedium.cluster_order[Window.num_placed_clusters])
 
         # Change cluster
         Window.num_placed_clusters += 1
-
+        if Window.num_placed_clusters != 5:
+             self.current_cluster_label.config(
+                    text=f"Current Cluster: {DataMedium.cluster_order[Window.num_placed_clusters]}" # 1 added to display current cluster
+                )
         if Window.num_placed_clusters < DataMedium.num_clusters:
             Window.piece_num = 0
 

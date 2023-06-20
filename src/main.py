@@ -1,13 +1,13 @@
 """Main file."""
 
 import csv
+import os
 import random
-import time
 import uuid
 import webbrowser
 from datetime import datetime
 from threading import Thread
-
+import time
 import gspread
 import numpy as np
 import pyrealsense2 as rs
@@ -16,7 +16,6 @@ from pynput import keyboard
 
 from utils import DataMedium
 from window import Window
-
 
 def main(participantId: str):
     """Run the program."""
@@ -41,7 +40,7 @@ def main(participantId: str):
     set_rows(row1, row2, data_rows, clusters)
 
     # Write to the file
-    with open(f"{DataMedium.participantId}.csv", "w", newline="") as file:
+    with open(f"{participantId}/{participantId}.csv", "w", newline="") as file:
         writer = csv.writer(file)
 
         # Header
@@ -60,9 +59,12 @@ def main(participantId: str):
     gc = gspread.service_account(filename="sheetsCredentials.json")
     wks = gc.open("FOW Puzzle Task Errors").sheet1
 
+    orderingCounter = 0
+    
     for cluster in DataMedium.cluster_order:
+        orderingCounter += 1
         wks.append_row(
-            [f"{current_date.strftime('%B%d')} {participantId} {cluster}", 0, 0, 0]
+            [f"{current_date.strftime('%B%d')} {participantId} {cluster}", orderingCounter, 0, 0, 0]
         )
 
     DataMedium.is_finished_main = True
@@ -127,7 +129,9 @@ def set_rows(
         if more_rows_needed is False:
             del data_rows[-1]
             break
-
+#def start_camera(): #added for start from window
+    #pipeline.start(config)
+    
 
 # Run the program
 if __name__ == "__main__":
@@ -150,6 +154,7 @@ if __name__ == "__main__":
         DataMedium.cluster_order: list[str] = [firstLetter] + random.sample(
             allLetters, 4
         )
+    os.makedirs(participantId)
 
     # GUI
     window = Window()
@@ -158,8 +163,9 @@ if __name__ == "__main__":
     # Camera
     try:
         # Reset camera in case it is occupied
+
         """
-        NOTE breaks on lab computer. Meant to reset camera if it incorrectly thinks it is streaming
+        # NOTE breaks on lab computer. Meant to reset camera if it incorrectly thinks it is streaming
 
         ctx = rs.context()
         for device in ctx.query_devices():
@@ -169,17 +175,31 @@ if __name__ == "__main__":
 
         # Set up pipeline
         pipeline = rs.pipeline()
+        
         config = rs.config()
+        
         config.enable_stream(rs.stream.color, 640, 480, rs.format.rgb8, 30)
-        config.enable_record_to_file(f"{participantId}.bag")
+        config.enable_stream(rs.stream.depth, 848, 480, rs.format.z16, 30)
+        config.enable_record_to_file(f"{participantId}/{participantId}.bag")
 
+       #config.merge_from_file('setup.json')
+       #camera_configs = rs.CfgD435()
+       #camera_configs.merge_from_file('setup.json')
+       #config = camera_configs
+        
         # Set up alignment
         align_to = rs.stream.color
         align = rs.align(align_to)
 
-        # Start pipeline
-        pipeline.start(config)
-
+        # Set pipeline
+        #pipeline.start(config)
+        #DataMedium.config = config
+        #DataMedium.pipeline = pipeline
+        def start_camera(): #added for start from window
+            pipeline.start(config)
+            
+        DataMedium.start_camera = start_camera
+            
         def save_snapshot(identifier: str):
             """Save a picture from the camera."""
             frames = pipeline.wait_for_frames()
@@ -188,12 +208,9 @@ if __name__ == "__main__":
 
             color_image = np.asanyarray(color_frame.get_data())
             im = Image.fromarray(color_image)
-            im.save(f"{participantId}_{identifier}.png")
+            im.save(f"{participantId}/{participantId}_{identifier}.png")
 
-        time.sleep(1)
-        save_snapshot(0)
-
-        window.save_snapshot = save_snapshot
+        DataMedium.save_snapshot = save_snapshot
 
     except Exception as e:
         print(e)
@@ -217,5 +234,11 @@ if __name__ == "__main__":
     window.start()
 
     # Stop camera
-    del config  # Will not work without this line
     pipeline.stop()
+    del pipeline
+    pipeline = None
+    
+    del config
+    # Will not work without this line
+    
+    config = None
