@@ -1,5 +1,5 @@
 """Main file."""
-
+import json
 import csv
 import os
 import random
@@ -177,26 +177,36 @@ if __name__ == "__main__":
         pipeline = rs.pipeline()
         
         config = rs.config()
+
+        pipeline_wrapper = rs.pipeline_wrapper(pipeline)
+        pipeline_profile = config.resolve(pipeline_wrapper)
+        
+        device = pipeline_profile.get_device()
+        adv_mode = rs.rs400_advanced_mode(device)
+        with open ('src/setup.json', 'r') as file:
+            configStr = json.load(file)
+        configStr = str(configStr).replace("'", '\"')
+        adv_mode.load_json(configStr)
         
         config.enable_stream(rs.stream.color, 640, 480, rs.format.rgb8, 30)
         config.enable_stream(rs.stream.depth, 848, 480, rs.format.z16, 30)
         config.enable_record_to_file(f"{participantId}/{participantId}.bag")
-
-       #config.merge_from_file('setup.json')
-       #camera_configs = rs.CfgD435()
-       #camera_configs.merge_from_file('setup.json')
-       #config = camera_configs
         
         # Set up alignment
         align_to = rs.stream.color
         align = rs.align(align_to)
-
-        # Set pipeline
-        #pipeline.start(config)
-        #DataMedium.config = config
-        #DataMedium.pipeline = pipeline
+        
         def start_camera(): #added for start from window
             pipeline.start(config)
+            
+            #pipeline_profile = pipeline.start(config)
+            #my_camera = pipeline_profile.get_device()
+            #adv_mode = rs.rs400_advanced_mode(my_camera)
+            #with open ('src/setup.json', 'r') as file:
+                #json_text = file.read()
+            #if not adv_mode.is_enabled():
+            #    adv_mode.toggle_advanced_mode(True)
+            #rs.rs400_advanced_mode(pipeline_profile.get_device()).load_json(json_text)
             
         DataMedium.start_camera = start_camera
             
